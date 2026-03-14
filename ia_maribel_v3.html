@@ -1,0 +1,2146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Maribel IA Personal — © 2025 Wil Rivera">
+<meta name="author" content="Wil Rivera">
+<title>Maribel · IA Personal v1 — © Wil Rivera</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* © 2025 Wil Rivera · Todos los derechos reservados */
+:root{
+  --ink:#06080e;--surface:#0d1120;--card:#141828;
+  --card2:#1a1f35;--rim:#1e2640;--rim2:#283055;
+  --accent:#b87aff;--a2:#9333ea;--a3:#7c3aed;
+  --rose:#f87171;--teal:#34d399;--sky:#60a5fa;--gold:#fbbf24;--green:#4ade80;
+  --text:#eef0ff;--muted:#6d7aaa;--soft:#c4caee;
+  --glow:rgba(184,122,255,.3);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--ink);font-family:'Outfit',sans-serif;color:var(--text);
+  background-image:
+    radial-gradient(ellipse 100% 50% at 50% -10%,rgba(147,51,234,.16) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 80% at 95% 50%,rgba(52,211,153,.05) 0%,transparent 55%),
+    radial-gradient(ellipse 40% 40% at 5% 95%,rgba(96,165,250,.04) 0%,transparent 50%);}
+
+/* ─── TOASTS ─── */
+#TC{position:fixed;top:16px;right:16px;z-index:9000;display:flex;flex-direction:column;gap:7px;pointer-events:none;}
+.toast{background:var(--card2);border:1px solid var(--rim2);border-radius:11px;padding:10px 16px;
+  font-size:.81rem;color:var(--text);display:flex;align-items:center;gap:8px;
+  box-shadow:0 8px 28px rgba(0,0,0,.55);animation:tIn .28s ease;min-width:210px;max-width:300px;pointer-events:all;}
+.toast.ok {border-color:rgba(74,222,128,.38);background:rgba(14,36,26,.95);}
+.toast.err{border-color:rgba(248,113,113,.38);background:rgba(36,14,18,.95);}
+.toast.inf{border-color:rgba(184,122,255,.32);background:rgba(22,18,40,.95);}
+.toast.wrn{border-color:rgba(251,191,36,.32); background:rgba(36,32,14,.95);}
+@keyframes tIn{from{opacity:0;transform:translateX(16px);}to{opacity:1;transform:translateX(0);}}
+@keyframes tOut{from{opacity:1;}to{opacity:0;transform:translateX(16px);}}
+
+/* ─── PANTALLA BIENVENIDA / LOGIN ─── */
+#loginScreen{
+  position:fixed;inset:0;z-index:1000;
+  display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse 130% 110% at 50% -5%,#1c0a38 0%,#06080e 65%);
+  padding:16px;
+}
+.login-wrap{
+  width:100%;max-width:420px;
+  display:flex;flex-direction:column;align-items:center;gap:0;
+}
+
+/* Maribel avatar grande en login */
+.login-avatar{
+  width:120px;height:120px;border-radius:50%;
+  background:linear-gradient(145deg,#1e1040,#120828);
+  border:2px solid rgba(184,122,255,.35);
+  box-shadow:0 0 50px rgba(147,51,234,.25),0 0 100px rgba(147,51,234,.1);
+  display:flex;align-items:center;justify-content:center;
+  animation:avFloat 5s ease-in-out infinite;
+  margin-bottom:18px;
+}
+@keyframes avFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-9px);}}
+
+.login-name{
+  font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;
+  background:linear-gradient(135deg,#eef0ff 20%,var(--accent));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:4px;
+}
+.login-sub{font-size:.82rem;color:var(--muted);margin-bottom:24px;text-align:center;line-height:1.5;}
+
+/* Card del formulario */
+.login-card{
+  width:100%;background:rgba(20,24,40,.9);
+  border:1px solid var(--rim2);border-radius:22px;
+  padding:32px 30px;display:flex;flex-direction:column;gap:16px;
+  box-shadow:0 24px 70px rgba(0,0,0,.65),0 0 50px rgba(147,51,234,.08);
+  backdrop-filter:blur(20px);
+}
+.lcard-title{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--soft);text-align:center;}
+.lcard-sub{font-size:.78rem;color:var(--muted);text-align:center;margin-top:-8px;line-height:1.5;}
+
+/* Input de usuario */
+.linput-wrap{position:relative;width:100%;}
+.linput-wrap input{
+  width:100%;background:rgba(10,12,24,.8);border:1px solid var(--rim2);
+  border-radius:14px;padding:14px 18px 14px 48px;
+  color:var(--text);font-family:'Outfit',sans-serif;font-size:.95rem;
+  outline:none;transition:all .22s;
+}
+.linput-wrap input::placeholder{color:var(--muted);}
+.linput-wrap input:focus{border-color:rgba(184,122,255,.5);box-shadow:0 0 0 3px rgba(184,122,255,.1);}
+.linput-wrap .lico{
+  position:absolute;left:14px;top:50%;transform:translateY(-50%);
+  font-size:1.1rem;pointer-events:none;
+}
+.linput-wrap .leye{
+  position:absolute;right:13px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;color:var(--muted);font-size:.9rem;padding:4px;
+}
+
+/* Campo contraseña (oculto por defecto) */
+#passWrap{display:none;}
+#passWrap.show{display:block;}
+
+/* Sugerencia de nombre */
+#nameSuggest{
+  display:none;font-size:.75rem;color:var(--teal);
+  background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);
+  border-radius:9px;padding:8px 13px;text-align:center;
+}
+#nameSuggest.show{display:block;}
+
+/* Error */
+#loginErr{
+  font-size:.77rem;color:var(--rose);text-align:center;
+  background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.28);
+  border-radius:9px;padding:8px 13px;display:none;animation:shake .4s ease;
+}
+#loginErr.show{display:block;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-5px);}75%{transform:translateX(5px);}}
+
+.lbtn{
+  width:100%;padding:14px;border-radius:13px;border:none;cursor:pointer;
+  background:linear-gradient(135deg,var(--accent),var(--a2));
+  color:#fff;font-family:'Outfit',sans-serif;font-size:.98rem;font-weight:600;
+  transition:all .22s;box-shadow:0 4px 18px rgba(147,51,234,.35);
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  position:relative;overflow:hidden;
+}
+.lbtn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.07);
+  transform:translateX(-100%);transition:transform .4s;}
+.lbtn:hover::after{transform:translateX(100%);}
+.lbtn:hover{transform:translateY(-2px);box-shadow:0 7px 26px rgba(147,51,234,.45);}
+.lbtn:active{transform:translateY(0);}
+
+.login-copy{font-size:.65rem;color:var(--muted);opacity:.5;text-align:center;margin-top:6px;}
+
+/* ─── PANEL TOGGLE ─── */
+#PT{position:fixed;top:50%;left:0;transform:translateY(-50%);z-index:500;
+  width:24px;height:58px;background:linear-gradient(180deg,var(--accent),var(--a2));
+  border:none;border-radius:0 10px 10px 0;color:#fff;font-size:.8rem;
+  cursor:pointer;display:none;align-items:center;justify-content:center;
+  box-shadow:3px 0 14px rgba(147,51,234,.3);transition:all .2s;}
+#PT.vis{display:flex;}
+#PT.open{left:372px;background:rgba(20,24,40,.95);border:1px solid var(--rim2);
+  border-left:none;box-shadow:none;}
+#PT:hover{width:30px;}
+.povl{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);z-index:98;}
+.povl.show{display:block;}
+
+/* ─── OFFLINE BAR ─── */
+#offBar{padding:5px 18px;font-size:.69rem;display:none;align-items:center;gap:8px;
+  border-bottom:1px solid;flex-shrink:0;}
+#offBar.offline{display:flex;background:rgba(248,113,113,.07);border-color:rgba(248,113,113,.18);color:var(--rose);}
+#offBar.back{display:flex;background:rgba(74,222,128,.06);border-color:rgba(74,222,128,.18);color:var(--green);}
+
+/* ─── LAYOUT ─── */
+.shell{display:flex;height:100vh;}
+
+/* ─── AVATAR PANEL ─── */
+.avp{
+  width:372px;min-width:372px;height:100vh;
+  background:linear-gradient(165deg,#111428 0%,#0c0f1e 55%,#08090f 100%);
+  border-right:1px solid var(--rim);
+  display:flex;flex-direction:column;align-items:center;
+  padding:20px 16px 14px;position:fixed;top:0;left:0;
+  z-index:99;overflow-y:auto;overflow-x:hidden;
+  transform:translateX(-100%);transition:transform .28s cubic-bezier(.4,0,.2,1);
+}
+.avp::-webkit-scrollbar{width:3px;}
+.avp::-webkit-scrollbar-thumb{background:var(--rim);}
+.avp::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);
+  width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle,rgba(147,51,234,.14),transparent 70%);
+  pointer-events:none;z-index:0;}
+.avp.open{transform:translateX(0);}
+
+/* Avatar frame */
+.avfr{
+  position:relative;width:196px;height:196px;border-radius:50%;
+  background:linear-gradient(145deg,#1c1e3a,#100e26);
+  border:2px solid rgba(184,122,255,.3);
+  box-shadow:0 0 38px rgba(147,51,234,.18),0 0 80px rgba(147,51,234,.07),inset 0 0 28px rgba(0,0,0,.6);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  animation:avFloat 6s ease-in-out infinite;z-index:1;
+}
+.avring{position:absolute;inset:-12px;border-radius:50%;
+  border:1px solid rgba(184,122,255,.15);animation:ringRot 16s linear infinite;}
+.avring::before{content:'';position:absolute;top:-4px;left:50%;transform:translateX(-50%);
+  width:8px;height:8px;border-radius:50%;
+  background:var(--accent);box-shadow:0 0 14px var(--accent),0 0 28px rgba(184,122,255,.5);}
+@keyframes ringRot{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+.avring2{position:absolute;inset:-22px;border-radius:50%;
+  border:1px solid rgba(184,122,255,.07);animation:ringRot 26s linear infinite reverse;}
+#faceSvg{width:168px;height:168px;position:relative;z-index:2;display:block;}
+
+/* Particles */
+.ptcl{position:absolute;border-radius:50%;pointer-events:none;animation:pdrift linear infinite;}
+@keyframes pdrift{0%{opacity:.6;transform:translate(0,0) scale(1);}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(0);}}
+
+/* Badges */
+.status-badge{display:flex;align-items:center;gap:8px;
+  background:rgba(18,22,40,.94);border:1px solid var(--rim2);
+  padding:5px 14px;border-radius:28px;font-size:.74rem;color:var(--soft);
+  margin-top:10px;z-index:1;}
+.sbdot{width:8px;height:8px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 8px var(--green);animation:breathe 2s ease-in-out infinite;}
+@keyframes breathe{0%,100%{transform:scale(1);}50%{transform:scale(1.4);}}
+
+.user-badge{display:flex;align-items:center;gap:7px;margin-top:6px;z-index:1;
+  background:rgba(184,122,255,.1);border:1px solid rgba(184,122,255,.22);
+  padding:4px 13px;border-radius:18px;font-size:.72rem;color:var(--soft);max-width:90%;overflow:hidden;}
+.user-badge span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.admin-badge{background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.28);color:var(--gold);}
+
+.av-name{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;
+  margin-top:9px;z-index:1;
+  background:linear-gradient(135deg,#eef0ff 25%,var(--accent));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.av-sub{display:flex;align-items:center;gap:7px;margin-top:3px;z-index:1;}
+.av-title{font-size:.7rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
+.av-ver{font-size:.6rem;background:rgba(184,122,255,.14);border:1px solid rgba(184,122,255,.25);
+  color:var(--accent);padding:1px 8px;border-radius:11px;letter-spacing:.4px;}
+
+/* Waveform */
+.wvf{display:flex;align-items:center;gap:3px;height:26px;margin-top:9px;
+  opacity:0;transition:opacity .3s;z-index:1;}
+.wvf.on{opacity:1;}
+.wb{width:3px;border-radius:2px;background:linear-gradient(to top,var(--accent),var(--teal));
+  animation:wba .6s ease-in-out infinite;}
+.wb:nth-child(1){height:4px;animation-delay:.00s;}.wb:nth-child(2){height:14px;animation-delay:.10s;}
+.wb:nth-child(3){height:23px;animation-delay:.20s;}.wb:nth-child(4){height:15px;animation-delay:.15s;}
+.wb:nth-child(5){height:26px;animation-delay:.05s;}.wb:nth-child(6){height:18px;animation-delay:.25s;}
+.wb:nth-child(7){height:10px;animation-delay:.10s;}.wb:nth-child(8){height:5px;animation-delay:.30s;}
+@keyframes wba{0%,100%{transform:scaleY(.28);}50%{transform:scaleY(1);}}
+
+/* Personalidad */
+.mood-row{display:flex;gap:4px;flex-wrap:wrap;justify-content:center;margin-top:9px;z-index:1;}
+.mpill{font-size:.67rem;padding:4px 10px;border-radius:18px;cursor:pointer;
+  border:1px solid transparent;transition:all .18s;color:var(--muted);background:rgba(255,255,255,.04);}
+.mpill:hover{background:rgba(184,122,255,.12);color:var(--soft);}
+.mpill.active{background:rgba(184,122,255,.22);border-color:rgba(184,122,255,.48);color:var(--text);}
+
+/* Model select */
+.modwrap{width:100%;margin-top:8px;z-index:1;
+  background:rgba(12,15,28,.9);border:1px solid var(--rim2);border-radius:11px;overflow:hidden;}
+select#msel{width:100%;background:transparent;border:none;color:var(--soft);
+  font-family:'Outfit',sans-serif;font-size:.77rem;padding:9px 30px 9px 12px;
+  outline:none;cursor:pointer;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='%236d7aaa' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;}
+select#msel option{background:#141828;color:var(--text);}
+
+/* Stats */
+.stats3{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-top:7px;z-index:1;}
+.sc{background:rgba(10,12,24,.85);border:1px solid var(--rim);
+  border-radius:9px;padding:7px 4px;text-align:center;}
+.sc .sv{font-size:.95rem;font-weight:600;color:var(--soft);line-height:1;}
+.sc .sl{font-size:.56rem;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:.5px;}
+
+/* Panel de admin (solo visible para admin) */
+#adminPanel{display:none;width:100%;z-index:1;
+  background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.22);
+  border-radius:11px;padding:10px 12px;margin-top:6px;}
+#adminPanel.show{display:block;}
+.admin-title{font-size:.72rem;color:var(--gold);font-weight:600;
+  display:flex;align-items:center;gap:5px;margin-bottom:8px;}
+#userList{display:flex;flex-direction:column;gap:4px;max-height:110px;overflow-y:auto;}
+#userList::-webkit-scrollbar{width:3px;}
+#userList::-webkit-scrollbar-thumb{background:rgba(251,191,36,.2);}
+.urow{display:flex;align-items:center;justify-content:space-between;
+  background:rgba(255,255,255,.04);border:1px solid var(--rim);
+  border-radius:7px;padding:5px 9px;font-size:.72rem;}
+.urow .uname{color:var(--soft);font-weight:500;}
+.urow .uinfo{color:var(--muted);font-size:.63rem;}
+.urow .udel{background:none;border:none;color:var(--rose);cursor:pointer;
+  font-size:.7rem;opacity:.6;transition:opacity .15s;padding:2px 5px;}
+.urow .udel:hover{opacity:1;}
+
+/* Actions */
+.avact{width:100%;display:flex;flex-direction:column;gap:5px;margin-top:7px;z-index:1;}
+.avbtn{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.04);
+  border:1px solid var(--rim);color:var(--muted);font-family:'Outfit',sans-serif;
+  font-size:.78rem;padding:8px 11px;border-radius:10px;cursor:pointer;transition:all .18s;width:100%;}
+.avbtn:hover{background:rgba(184,122,255,.1);border-color:rgba(184,122,255,.3);color:var(--text);}
+.avbtn.red:hover{background:rgba(248,113,113,.1);border-color:rgba(248,113,113,.28);color:var(--rose);}
+.avbtn.amber:hover{background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.26);color:var(--gold);}
+.avbtn .ic{font-size:.88rem;width:17px;text-align:center;flex-shrink:0;}
+
+.spacer{flex:1;min-height:5px;}
+
+/* Copyright footer */
+.cpf{width:100%;text-align:center;padding:10px 0 4px;z-index:1;
+  border-top:1px solid rgba(255,255,255,.05);margin-top:5px;}
+.cpline{font-size:.63rem;color:var(--muted);opacity:.7;line-height:1.8;}
+.cpline strong{color:rgba(184,122,255,.8);}
+.cpbadge{display:inline-flex;align-items:center;gap:4px;font-size:.6rem;
+  color:var(--accent);background:rgba(184,122,255,.08);
+  border:1px solid rgba(184,122,255,.18);padding:2px 10px;border-radius:14px;margin-top:4px;}
+
+/* ─── CHAT ─── */
+.chat-panel{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;width:100%;}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;
+  padding:11px 18px;border-bottom:1px solid var(--rim);
+  background:rgba(8,9,15,.85);backdrop-filter:blur(18px);
+  position:relative;z-index:10;flex-shrink:0;}
+.tinfo{display:flex;align-items:center;gap:10px;}
+.tav{width:33px;height:33px;border-radius:50%;border:1.5px solid rgba(184,122,255,.32);
+  background:linear-gradient(145deg,#1c1e3a,#100e26);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.tname h3{font-family:'Playfair Display',serif;font-size:.88rem;font-weight:500;}
+.tname p{font-size:.66rem;color:var(--muted);margin-top:1px;}
+.tname .spn{color:var(--teal);}
+.tver{font-size:.56rem;background:rgba(184,122,255,.1);border:1px solid rgba(184,122,255,.2);
+  color:var(--accent);padding:1px 6px;border-radius:9px;margin-left:5px;vertical-align:middle;}
+.tact{display:flex;gap:5px;flex-wrap:wrap;}
+.tbtn{background:rgba(255,255,255,.04);border:1px solid var(--rim);color:var(--muted);
+  font-size:.72rem;padding:5px 10px;border-radius:8px;cursor:pointer;transition:all .18s;
+  font-family:'Outfit',sans-serif;display:flex;align-items:center;gap:4px;white-space:nowrap;}
+.tbtn:hover{border-color:var(--accent);color:var(--text);}
+.tbtn.mic-on{background:rgba(248,113,113,.14);border-color:var(--rose);color:var(--rose);
+  animation:micP 1s ease-in-out infinite;}
+@keyframes micP{0%,100%{box-shadow:none;}50%{box-shadow:0 0 0 4px rgba(248,113,113,.1);}}
+.tbtn.voff{color:var(--rose);border-color:rgba(248,113,113,.28);}
+
+/* Learn bar */
+#lbar{padding:5px 18px;font-size:.69rem;display:none;align-items:center;gap:8px;
+  background:rgba(52,211,153,.04);border-bottom:1px solid rgba(52,211,153,.14);
+  color:var(--teal);flex-shrink:0;}
+#lbar.show{display:flex;}
+.lpulse{width:6px;height:6px;border-radius:50%;background:var(--teal);flex-shrink:0;
+  animation:breathe .8s ease-in-out infinite;}
+#lpw{flex:1;height:3px;background:var(--rim);border-radius:2px;overflow:hidden;}
+#lpb{height:100%;background:linear-gradient(90deg,var(--accent),var(--teal));width:0%;transition:width .3s;border-radius:2px;}
+
+/* Messages */
+.msgs{flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth;}
+.msgs::-webkit-scrollbar{width:4px;}
+.msgs::-webkit-scrollbar-thumb{background:var(--rim);border-radius:4px;}
+
+/* Welcome */
+.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  flex:1;gap:11px;padding:24px 10px;animation:fadeUp .5s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.wt{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;text-align:center;
+  background:linear-gradient(135deg,var(--text),var(--accent));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.ws{font-size:.83rem;color:var(--muted);text-align:center;max-width:380px;line-height:1.65;}
+.ws strong{color:var(--soft);}
+.chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:520px;margin-top:5px;}
+.chip{background:rgba(20,24,40,.96);border:1px solid var(--rim2);color:var(--muted);
+  padding:6px 13px;border-radius:40px;font-size:.72rem;cursor:pointer;transition:all .18s;}
+.chip:hover{border-color:var(--accent);color:var(--text);background:rgba(184,122,255,.1);}
+
+/* Rows */
+.mrow{display:flex;gap:8px;animation:fadeUp .22s ease;max-width:760px;}
+.mrow.user{align-self:flex-end;flex-direction:row-reverse;}
+.mrow.ai{align-self:flex-start;}
+.mrow.sys{align-self:center;}
+.mface{width:30px;height:30px;border-radius:50%;flex-shrink:0;
+  border:1.5px solid rgba(184,122,255,.26);
+  background:linear-gradient(145deg,#1c1e3a,#100e26);
+  display:flex;align-items:center;justify-content:center;margin-top:3px;overflow:hidden;}
+.uface{width:30px;height:30px;border-radius:50%;flex-shrink:0;margin-top:3px;
+  border:1.5px solid rgba(96,165,250,.26);
+  background:linear-gradient(135deg,rgba(96,165,250,.2),rgba(96,165,250,.04));
+  display:flex;align-items:center;justify-content:center;
+  font-size:.64rem;font-weight:700;color:var(--sky);font-family:'Playfair Display',serif;}
+.uface.adm{border-color:rgba(251,191,36,.28);background:linear-gradient(135deg,rgba(251,191,36,.2),rgba(251,191,36,.04));color:var(--gold);}
+.bub{padding:11px 15px;border-radius:15px;font-size:.86rem;line-height:1.72;max-width:580px;word-break:break-word;}
+.ai-b{background:var(--card);border:1px solid var(--rim2);color:var(--text);
+  border-bottom-left-radius:4px;box-shadow:0 2px 10px rgba(0,0,0,.28);}
+.u-b{background:linear-gradient(135deg,rgba(28,40,88,.9),rgba(20,26,52,.9));
+  border:1px solid rgba(184,122,255,.2);color:var(--text);
+  border-bottom-right-radius:4px;box-shadow:0 2px 10px rgba(0,0,0,.28);}
+.sys-b{background:rgba(52,211,153,.05);border:1px solid rgba(52,211,153,.15);
+  color:var(--teal);font-size:.71rem;padding:5px 12px;border-radius:10px;text-align:center;}
+.mmeta{font-size:.6rem;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.mrow.user .mmeta{justify-content:flex-end;}
+.tag{font-size:.56rem;padding:1px 7px;border-radius:8px;border:1px solid;}
+.tag.tm{background:rgba(184,122,255,.1);border-color:rgba(184,122,255,.26);color:var(--accent);}
+.tag.tmod{background:rgba(52,211,153,.07);border-color:rgba(52,211,153,.2);color:var(--teal);}
+.tag.tadm{background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.25);color:var(--gold);}
+
+/* Typing */
+.dots{display:flex;gap:5px;align-items:center;padding:2px 0;}
+.dots span{width:5px;height:5px;border-radius:50%;background:var(--accent);
+  animation:dotA 1.2s ease-in-out infinite;}
+.dots span:nth-child(2){animation-delay:.2s;}.dots span:nth-child(3){animation-delay:.4s;}
+@keyframes dotA{0%,80%,100%{opacity:.2;transform:scale(.75);}40%{opacity:1;transform:scale(1);}}
+
+/* ─── INPUT ─── */
+.inparea{padding:10px 16px 14px;border-top:1px solid var(--rim);
+  background:rgba(8,9,15,.88);backdrop-filter:blur(14px);flex-shrink:0;}
+.inprow{display:flex;gap:7px;align-items:flex-end;}
+textarea#inp{flex:1;background:rgba(18,22,40,.88);border:1px solid var(--rim2);
+  border-radius:13px;padding:10px 13px;color:var(--text);
+  font-family:'Outfit',sans-serif;font-size:.86rem;
+  resize:none;outline:none;max-height:120px;overflow-y:auto;line-height:1.5;
+  transition:border-color .2s,box-shadow .2s;}
+textarea#inp::placeholder{color:var(--muted);}
+textarea#inp:focus{border-color:rgba(184,122,255,.45);box-shadow:0 0 0 3px rgba(184,122,255,.09);}
+.ibtn{width:40px;height:40px;border-radius:11px;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .18s;flex-shrink:0;}
+.send{background:linear-gradient(135deg,var(--accent),var(--a2));color:#fff;
+  box-shadow:0 3px 12px rgba(147,51,234,.35);}
+.send:hover{transform:translateY(-2px);box-shadow:0 5px 18px rgba(147,51,234,.45);}
+.send:disabled{opacity:.35;cursor:not-allowed;transform:none;}
+.micb{background:rgba(18,22,40,.88);border:1px solid var(--rim2);color:var(--muted);}
+.micb:hover{border-color:var(--accent);color:var(--text);}
+.micb.on{background:rgba(248,113,113,.14);border-color:var(--rose);color:var(--rose);animation:micP 1s ease-in-out infinite;}
+.learnb{background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.22);
+  color:var(--teal);width:auto;padding:0 10px;font-size:.69rem;font-family:'Outfit',sans-serif;}
+.learnb:hover{background:rgba(52,211,153,.16);}
+.hint{font-size:.6rem;color:var(--muted);text-align:center;margin-top:5px;opacity:.5;}
+.hint strong{color:rgba(184,122,255,.5);}
+
+/* ─── MODAL ─── */
+.mbg{position:fixed;inset:0;background:rgba(0,0,0,.84);backdrop-filter:blur(8px);
+  display:none;align-items:center;justify-content:center;z-index:400;}
+.mbg.open{display:flex;}
+.modal{background:var(--card);border:1px solid var(--rim2);border-radius:18px;
+  padding:24px;width:90%;max-width:430px;display:flex;flex-direction:column;gap:12px;
+  box-shadow:0 20px 60px rgba(0,0,0,.65);}
+.modal h3{font-family:'Playfair Display',serif;font-size:1rem;}
+.modal p{font-size:.77rem;color:var(--muted);line-height:1.55;}
+.modal textarea{background:rgba(12,14,26,.95);border:1px solid var(--rim2);border-radius:9px;
+  padding:9px 12px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.83rem;
+  resize:none;outline:none;height:80px;width:100%;transition:border-color .2s;}
+.modal textarea:focus{border-color:rgba(184,122,255,.48);}
+.mbtns{display:flex;gap:8px;justify-content:flex-end;}
+.mbtn{padding:7px 16px;border-radius:8px;border:none;cursor:pointer;
+  font-family:'Outfit',sans-serif;font-size:.82rem;transition:all .15s;}
+.mbtn.cancel{background:rgba(255,255,255,.07);color:var(--muted);}
+.mbtn.save{background:linear-gradient(135deg,var(--accent),var(--a2));color:#fff;}
+
+/* ─── LIGHT THEME ─── */
+body.light{
+  --ink:#eff1f9;--surface:#f5f6fc;--card:#ffffff;--card2:#f0f2fb;
+  --rim:#dde0ef;--rim2:#cdd1e6;--text:#1a1d32;--muted:#636f9a;--soft:#38426a;
+}
+body.light .avp{background:linear-gradient(165deg,#edf0fc,#e5e8f5);}
+body.light .topbar,body.light .inparea{background:rgba(245,246,252,.95);}
+body.light .ai-b{background:#fff;box-shadow:0 2px 9px rgba(0,0,0,.07);}
+body.light .u-b{background:linear-gradient(135deg,#ede8ff,#e3defc);border-color:rgba(147,51,234,.18);}
+body.light select#msel option{background:#fff;}
+body.light textarea#inp{background:rgba(255,255,255,.95);}
+body.light .chip{background:rgba(255,255,255,.95);}
+body.light .modal{background:#fff;}
+body.light .modal textarea{background:#f0f2fc;}
+body.light .login-card{background:rgba(240,242,252,.95);}
+body.light .linput-wrap input{background:rgba(232,234,248,.9);}
+body.light .sc{background:rgba(220,224,244,.5);}
+
+/* ─── ADMIN SECTIONS ─── */
+.adm-section{width:100%;z-index:1;margin-top:8px;}
+.adm-sec-title{font-size:.66rem;color:var(--gold);font-weight:600;letter-spacing:.5px;
+  text-transform:uppercase;margin-bottom:5px;display:flex;align-items:center;gap:5px;
+  padding-bottom:4px;border-bottom:1px solid rgba(251,191,36,.15);}
+
+/* Login — campo usuario con hint de admin oculto */
+.login-admin-hint{font-size:.7rem;color:var(--muted);text-align:center;margin-top:-10px;
+  opacity:.55;}
+
+/* version badge fija */
+.vbadge{position:fixed;bottom:10px;right:12px;font-size:.59rem;color:var(--muted);
+  opacity:.45;background:rgba(14,18,32,.75);border:1px solid var(--rim);
+  padding:3px 10px;border-radius:18px;z-index:50;pointer-events:none;}
+
+/* ─── RESPONSIVE ─── */
+/* Tablet landscape & small desktop */
+@media(max-width:1024px){
+  .avp{width:300px;min-width:300px;}
+  #PT.open{left:300px;}
+  .avfr{width:160px;height:160px;}
+  #faceSvg{width:136px;height:136px;}
+  .avring{inset:-10px;}.avring2{inset:-18px;}
+  .av-name{font-size:1.45rem;}
+}
+
+/* Tablet portrait */
+@media(max-width:768px){
+  html,body{overflow:hidden;}
+  .avp{width:280px;min-width:280px;padding:16px 12px 10px;}
+  #PT.open{left:280px;}
+  .avfr{width:140px;height:140px;}
+  #faceSvg{width:118px;height:118px;}
+  .topbar{padding:8px 12px;}
+  .tname h3{font-size:.8rem;}
+  .tname p{font-size:.6rem;}
+  .tact .tbtn{font-size:.66rem;padding:4px 7px;}
+  .msgs{padding:10px 12px;gap:10px;}
+  .bub{font-size:.83rem;max-width:92%;}
+  .inparea{padding:8px 10px 12px;}
+  .login-card{padding:24px 20px;}
+}
+
+/* Mobile */
+@media(max-width:600px){
+  /* Login */
+  .login-avatar{width:90px;height:90px;margin-bottom:12px;}
+  .login-name{font-size:1.6rem;}
+  .login-sub{font-size:.76rem;margin-bottom:16px;}
+  .login-card{padding:20px 16px;gap:13px;}
+  .lcard-title{font-size:.95rem;}
+  .linput-wrap input{font-size:.88rem;padding:12px 16px 12px 44px;}
+  .lbtn{padding:12px;font-size:.9rem;}
+
+  /* Panel toggle */
+  #PT{width:22px;height:50px;font-size:.72rem;}
+  #PT.open{left:calc(100vw - 8px);}
+
+  /* Avatar panel — full screen slide-in on mobile */
+  .avp{width:100vw;min-width:unset;padding:16px 16px 12px;
+    border-right:none;border-bottom:1px solid var(--rim);}
+  #PT.open{left:calc(100vw - 8px);}
+
+  /* Chat layout */
+  .shell{flex-direction:column;}
+  .chat-panel{width:100%;}
+  .topbar{padding:7px 10px;flex-wrap:wrap;gap:5px;}
+  .tinfo{gap:7px;}
+  .tav{width:28px;height:28px;}
+  .tname h3{font-size:.78rem;}
+  .tname p{font-size:.58rem;}
+  .tact{gap:3px;}
+  .tact .tbtn{font-size:.62rem;padding:4px 6px;}
+  .tact .tbtn span:last-child{display:none;}
+
+  /* Messages */
+  .msgs{padding:8px 8px;gap:8px;}
+  .mrow{max-width:100%;}
+  .bub{font-size:.82rem;padding:9px 12px;max-width:88vw;}
+  .mface,.uface{width:26px;height:26px;font-size:.58rem;}
+  .mmeta{font-size:.56rem;}
+
+  /* Welcome */
+  .wt{font-size:1.15rem;}
+  .ws{font-size:.77rem;}
+  .chips{gap:4px;}
+  .chip{font-size:.68rem;padding:5px 10px;}
+
+  /* Input */
+  .inparea{padding:6px 8px 10px;}
+  .inprow{gap:5px;}
+  textarea#inp{font-size:.82rem;padding:9px 11px;}
+  .ibtn{width:36px;height:36px;border-radius:9px;}
+  .learnb{padding:0 8px;font-size:.63rem;}
+  .hint{font-size:.55rem;}
+
+  /* Modals */
+  .modal{padding:18px 14px;width:96%;}
+
+  /* Toast */
+  #TC{top:8px;right:8px;}
+  .toast{font-size:.75rem;min-width:160px;max-width:88vw;padding:8px 12px;}
+
+  /* Version badge */
+  .vbadge{display:none;}
+
+  /* Avatar panel content */
+  .avfr{width:110px;height:110px;}
+  #faceSvg{width:92px;height:92px;}
+  .avring{inset:-8px;}.avring2{inset:-14px;}
+  .av-name{font-size:1.25rem;margin-top:6px;}
+  .status-badge{font-size:.67rem;padding:4px 11px;}
+  .user-badge{font-size:.65rem;padding:3px 10px;}
+  .mood-row{gap:3px;}
+  .mpill{font-size:.62rem;padding:3px 8px;}
+  .modwrap{margin-top:6px;}
+  select#msel{font-size:.72rem;padding:7px 28px 7px 10px;}
+  .stats3{margin-top:5px;gap:4px;}
+  .sc .sv{font-size:.88rem;}
+  .sc .sl{font-size:.52rem;}
+  .avact{gap:4px;margin-top:5px;}
+  .avbtn{font-size:.73rem;padding:7px 10px;}
+  .admin-title{font-size:.68rem;}
+  #userList{max-height:90px;}
+  .urow{font-size:.68rem;padding:4px 7px;}
+}
+
+/* Extra small */
+@media(max-width:380px){
+  .login-name{font-size:1.4rem;}
+  .login-card{padding:16px 12px;}
+  .bub{max-width:92vw;}
+  .tact .tbtn{padding:3px 5px;font-size:.6rem;}
+}
+
+/* Landscape mobile — evitar que el panel tape todo */
+@media(max-width:600px) and (orientation:landscape){
+  .avp{width:260px;min-width:unset;overflow-y:auto;}
+  #PT.open{left:260px;}
+  .avfr{width:80px;height:80px;}
+  #faceSvg{width:66px;height:66px;}
+  .avring{inset:-6px;}.avring2{inset:-10px;}
+  .av-name{font-size:1rem;}
+  .mood-row,.stats3,.modwrap{margin-top:4px;}
+}
+</style>
+</head>
+<body>
+
+<div id="TC"></div>
+<div class="vbadge">Maribel IA v1.0.0 · © 2025 Wil Rivera</div>
+
+<!-- ═══════════ PANTALLA DE CARGA ═══════════ -->
+<div id="loadingScreen" style="
+  position:fixed;inset:0;z-index:2000;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
+  background:radial-gradient(ellipse 130% 110% at 50% -5%,#1c0a38 0%,#06080e 65%);">
+  <div style="width:64px;height:64px;border-radius:50%;
+    background:linear-gradient(145deg,#1e1040,#120828);
+    border:2px solid rgba(184,122,255,.35);
+    box-shadow:0 0 40px rgba(147,51,234,.3);
+    display:flex;align-items:center;justify-content:center;
+    animation:avFloat 2s ease-in-out infinite;">
+    <svg viewBox="0 0 200 200" width="44" height="44" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="100" cy="122" rx="54" ry="60" fill="#f7c9a8"/>
+      <ellipse cx="100" cy="72"  rx="62" ry="64" fill="#3e2010"/>
+      <circle cx="82"  cy="110" r="9" fill="#44248a"/>
+      <circle cx="118" cy="110" r="9" fill="#44248a"/>
+      <circle cx="87"  cy="106" r="3" fill="white" opacity=".9"/>
+      <circle cx="123" cy="106" r="3" fill="white" opacity=".9"/>
+      <path d="M84,138 Q100,149 116,138" fill="none" stroke="#c0485e" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;
+    background:linear-gradient(135deg,#eef0ff 20%,#b87aff);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;">Maribel</div>
+  <div style="display:flex;gap:6px;align-items:center;">
+    <div style="width:8px;height:8px;border-radius:50%;background:#b87aff;animation:dotA 1.2s ease-in-out infinite;"></div>
+    <div style="width:8px;height:8px;border-radius:50%;background:#b87aff;animation:dotA 1.2s ease-in-out .2s infinite;"></div>
+    <div style="width:8px;height:8px;border-radius:50%;background:#b87aff;animation:dotA 1.2s ease-in-out .4s infinite;"></div>
+  </div>
+  <div id="loadingMsg" style="font-size:.78rem;color:#6d7aaa;font-family:'Outfit',sans-serif;">Iniciando...</div>
+</div>
+
+<!-- ═══════════ LOGIN / BIENVENIDA ═══════════ -->
+<div id="loginScreen">
+  <div class="login-wrap">
+
+    <div class="login-avatar">
+      <svg viewBox="0 0 200 200" width="80" height="80" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="100" cy="122" rx="54" ry="60" fill="#f7c9a8"/>
+        <ellipse cx="100" cy="72"  rx="62" ry="64" fill="#3e2010"/>
+        <circle cx="82"  cy="110" r="9" fill="#44248a"/>
+        <circle cx="118" cy="110" r="9" fill="#44248a"/>
+        <circle cx="87"  cy="106" r="3" fill="white" opacity=".9"/>
+        <circle cx="123" cy="106" r="3" fill="white" opacity=".9"/>
+        <path d="M84,138 Q100,149 116,138" fill="none" stroke="#c0485e" stroke-width="3" stroke-linecap="round"/>
+        <ellipse cx="68" cy="128" rx="15" ry="9" fill="#f9a0a0" opacity=".4"/>
+        <ellipse cx="132" cy="128" rx="15" ry="9" fill="#f9a0a0" opacity=".4"/>
+      </svg>
+    </div>
+
+    <div class="login-name">Maribel</div>
+    <div class="login-sub">Tu asistente IA personal · v1.0.0<br>© 2025 Wil Rivera</div>
+
+    <div class="login-card">
+      <div class="lcard-title">👋 ¡Hola! ¿Cómo te llamas?</div>
+      <div class="lcard-sub">Escribe tu nombre y Maribel te recordará siempre</div>
+
+      <!-- Campo nombre (siempre visible) -->
+      <div class="linput-wrap">
+        <span class="lico">😊</span>
+        <input type="text" id="loginUser" placeholder="Escribe tu nombre..." autocomplete="given-name" maxlength="30"/>
+      </div>
+
+      <!-- Sugerencia de saludo -->
+      <div id="nameSuggest"></div>
+
+      <!-- Campo contraseña SOLO para admin -->
+      <div class="linput-wrap" id="passWrap">
+        <span class="lico">🔑</span>
+        <input type="password" id="loginPass" placeholder="Clave de administrador" autocomplete="current-password"/>
+        <button class="leye" id="eyeBtn" type="button">👁️</button>
+      </div>
+
+      <div id="loginErr">⚠️ Clave incorrecta. Solo el administrador puede acceder con esa clave.</div>
+
+      <button class="lbtn" id="loginBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        Entrar a chatear
+      </button>
+    </div>
+
+    <div class="login-copy" style="margin-top:10px;">© 2025 Wil Rivera · Todos los derechos reservados · Maribel IA v1.0.0</div>
+  </div>
+</div>
+
+<!-- PANEL TOGGLE — SOLO ADMIN -->
+<button id="PT" title="Panel Admin">⚙️</button>
+<div class="povl" id="povl"></div>
+
+<!-- OFFLINE BAR -->
+<div id="offBar">
+  <span id="offIco">📡</span><span id="offMsg">Sin conexión</span>
+</div>
+
+<!-- MODAL ENSEÑAR -->
+<div class="mbg" id="teachModal">
+  <div class="modal">
+    <h3>📚 Enseñarle algo a Maribel</h3>
+    <p>Escribe lo que quieres que recuerde. Maribel lo guardará y lo usará en futuras conversaciones contigo.</p>
+    <textarea id="teachInp" placeholder="Ej: Me gustan los videojuegos de estrategia. Trabajo como contador. Tengo dos hijos..."></textarea>
+    <div class="mbtns">
+      <button class="mbtn cancel" id="cancelTeach">Cancelar</button>
+      <button class="mbtn save" id="doTeach">💾 Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SISTEMA (admin) -->
+<div class="mbg" id="sysModal">
+  <div class="modal" style="max-width:500px;">
+    <h3>⚙️ Configuración del Sistema</h3>
+    <p style="margin-top:-4px;">Panel de control completo de Maribel.</p>
+
+    <!-- API Key JSONBin -->
+    <div style="background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.22);border-radius:11px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;">
+      <label style="font-size:.74rem;color:var(--gold);font-weight:600;">🔑 JSONBin API Key <span style="font-weight:400;color:var(--muted);">(jsonbin.io → API Keys)</span></label>
+      <div style="position:relative;">
+        <input id="jbKeyInp" type="password" style="width:100%;background:rgba(12,14,26,.95);border:1px solid rgba(251,191,36,.3);border-radius:9px;padding:9px 40px 9px 12px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.82rem;outline:none;" placeholder="$2a$10$..."/>
+        <button id="jbKeyEye" type="button" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:.85rem;">👁️</button>
+      </div>
+      <div id="jbStatus" style="font-size:.7rem;color:var(--muted);">Estado: cargando...</div>
+    </div>
+
+    <!-- API Key OpenRouter -->
+    <div style="background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.22);border-radius:11px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;">
+      <label style="font-size:.74rem;color:var(--sky);font-weight:600;">🤖 OpenRouter API Key <span style="font-weight:400;color:var(--muted);">(openrouter.ai → Keys — gratis)</span></label>
+      <div style="position:relative;">
+        <input id="orKeyInp" type="password" style="width:100%;background:rgba(12,14,26,.95);border:1px solid rgba(96,165,250,.3);border-radius:9px;padding:9px 40px 9px 12px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.82rem;outline:none;" placeholder="sk-or-v1-..."/>
+        <button id="orKeyEye" type="button" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:.85rem;">👁️</button>
+      </div>
+      <div id="orStatus" style="font-size:.7rem;color:var(--muted);">Cubre: GPT-4o, Claude, Gemini, DeepSeek, Llama, Qwen y más</div>
+      <button id="orTestBtn" type="button" style="background:rgba(96,165,250,.12);border:1px solid rgba(96,165,250,.3);color:var(--sky);font-family:'Outfit',sans-serif;font-size:.74rem;padding:6px 12px;border-radius:8px;cursor:pointer;transition:all .18s;align-self:flex-start;">🧪 Probar conexión</button>
+    </div>
+
+    <textarea id="sysInp" style="height:100px;" placeholder="Prompt base de Maribel (opcional)..."></textarea>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <label style="font-size:.76rem;color:var(--soft);">Nombre del bot</label>
+      <input id="botNameInp" type="text" style="background:rgba(12,14,26,.95);border:1px solid var(--rim2);border-radius:9px;padding:8px 12px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.85rem;outline:none;" placeholder="Maribel"/>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <label style="font-size:.76rem;color:var(--soft);">Mensaje de bienvenida</label>
+      <input id="welcomeInp" type="text" style="background:rgba(12,14,26,.95);border:1px solid var(--rim2);border-radius:9px;padding:8px 12px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.85rem;outline:none;" placeholder="¿En qué puedo ayudarte?"/>
+    </div>
+    <div class="mbtns">
+      <button class="mbtn cancel" id="cancelSys">Cancelar</button>
+      <button class="mbtn save" id="saveSys">💾 Guardar todo</button>
+    </div>
+  </div>
+</div>
+
+<div class="shell">
+
+  <!-- ═══════════ PANEL ADMIN COMPLETO ═══════════ -->
+  <aside class="avp" id="avPanel">
+    <div class="avfr">
+      <div class="avring"></div>
+      <div class="avring2"></div>
+      <svg id="faceSvg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="gS" cx="50%" cy="40%" r="60%">
+            <stop offset="0%" stop-color="#f8cba8"/><stop offset="100%" stop-color="#e8966e"/>
+          </radialGradient>
+          <radialGradient id="gH" cx="50%" cy="30%" r="70%">
+            <stop offset="0%" stop-color="#3e2010"/><stop offset="100%" stop-color="#1a0a02"/>
+          </radialGradient>
+          <radialGradient id="gI" cx="30%" cy="30%" r="65%">
+            <stop offset="0%" stop-color="#8c60c0"/><stop offset="55%" stop-color="#4e28a0"/><stop offset="100%" stop-color="#1c0850"/>
+          </radialGradient>
+          <radialGradient id="gL" cx="50%" cy="35%" r="65%">
+            <stop offset="0%" stop-color="#ea6880"/><stop offset="100%" stop-color="#c24860"/>
+          </radialGradient>
+          <radialGradient id="gC" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#f9a0a0" stop-opacity=".45"/><stop offset="100%" stop-color="#f9a0a0" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <ellipse cx="100" cy="180" rx="21" ry="12" fill="#e8966e"/>
+        <ellipse cx="100" cy="74" rx="64" ry="67" fill="url(#gH)"/>
+        <ellipse cx="41" cy="112" rx="18" ry="38" fill="url(#gH)" transform="rotate(-8 41 112)"/>
+        <ellipse cx="159" cy="112" rx="18" ry="38" fill="url(#gH)" transform="rotate(8 159 112)"/>
+        <ellipse cx="100" cy="113" rx="57" ry="65" fill="url(#gS)"/>
+        <path d="M40,75 Q55,28 100,27 Q145,28 160,75 Q145,56 126,54 Q112,45 100,47 Q88,45 74,54 Q55,56 40,75Z" fill="url(#gH)"/>
+        <path d="M158,86 Q172,100 168,136 Q161,127 158,110Z" fill="url(#gH)"/>
+        <path d="M42,86 Q28,100 32,136 Q39,127 42,110Z" fill="url(#gH)"/>
+        <ellipse cx="67" cy="130" rx="16" ry="10" fill="url(#gC)"/>
+        <ellipse cx="133" cy="130" rx="16" ry="10" fill="url(#gC)"/>
+        <path id="browL" d="M64,87 Q76,81 88,84" stroke="#3e2010" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path id="browR" d="M112,84 Q124,81 136,87" stroke="#3e2010" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <g id="eyeL">
+          <ellipse cx="76" cy="102" rx="14" ry="10" fill="white"/>
+          <circle id="irisL" cx="76" cy="102" r="7" fill="url(#gI)"/>
+          <circle id="pupilL" cx="76" cy="102" r="3.8" fill="#060010"/>
+          <circle cx="79" cy="99" r="1.9" fill="white" opacity=".92"/>
+          <circle cx="77" cy="104" r=".8" fill="white" opacity=".4"/>
+          <path d="M62,102 Q76,90 90,102" fill="none" stroke="#1a0802" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M63,106 Q76,111 89,106" fill="none" stroke="#d48860" stroke-width="1.5" stroke-linecap="round" opacity=".4"/>
+          <ellipse id="lidL" cx="76" cy="102" rx="14" ry="10" fill="url(#gS)" style="transform-origin:76px 102px;transform:scaleY(0.04);transition:transform .08s;"/>
+        </g>
+        <g id="eyeR">
+          <ellipse cx="124" cy="102" rx="14" ry="10" fill="white"/>
+          <circle id="irisR" cx="124" cy="102" r="7" fill="url(#gI)"/>
+          <circle id="pupilR" cx="124" cy="102" r="3.8" fill="#060010"/>
+          <circle cx="127" cy="99" r="1.9" fill="white" opacity=".92"/>
+          <circle cx="125" cy="105" r=".8" fill="white" opacity=".4"/>
+          <path d="M110,102 Q124,90 138,102" fill="none" stroke="#1a0802" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M111,106 Q124,111 137,106" fill="none" stroke="#d48860" stroke-width="1.5" stroke-linecap="round" opacity=".4"/>
+          <ellipse id="lidR" cx="124" cy="102" rx="14" ry="10" fill="url(#gS)" style="transform-origin:124px 102px;transform:scaleY(0.04);transition:transform .08s;"/>
+        </g>
+        <path d="M100,112 Q97,122 92,126 Q96,130 100,130 Q104,130 108,126 Q103,122 100,112Z" fill="#d48860" opacity=".5"/>
+        <ellipse cx="93" cy="126" rx="4" ry="2.5" fill="#c07850" opacity=".35"/>
+        <ellipse cx="107" cy="126" rx="4" ry="2.5" fill="#c07850" opacity=".35"/>
+        <g id="mG">
+          <path id="lipT" d="M84,142 Q92,138 100,139 Q108,138 116,142 Q108,145 100,145 Q92,145 84,142Z" fill="url(#gL)"/>
+          <path id="lipB" d="M84,142 Q92,152 100,153 Q108,152 116,142 Q108,145 100,145 Q92,145 84,142Z" fill="#c44e68"/>
+          <ellipse id="mIn" cx="100" cy="147" rx="11" ry="2.5" fill="#380016" opacity="0"/>
+          <rect id="mTe" x="91" y="144" width="18" height="5" rx="2" fill="#f8f4f0" opacity="0"/>
+          <path id="mLi" d="M86,142 Q100,145 114,142" fill="none" stroke="#c44e68" stroke-width="1.3" stroke-linecap="round"/>
+        </g>
+        <ellipse cx="100" cy="174" rx="37" ry="7" fill="#00000025"/>
+      </svg>
+    </div>
+
+    <div class="status-badge">
+      <div class="sbdot"></div>
+      <span>⚙️ Administrador</span>
+    </div>
+    <div class="user-badge admin-badge"><span>👑</span><span id="uLbl">elparivera</span></div>
+
+    <div class="av-name">Maribel</div>
+    <div class="av-sub">
+      <span class="av-title">Panel de Control</span>
+      <span class="av-ver">v1.0.0</span>
+    </div>
+    <div style="font-size:.62rem;color:var(--teal);margin-top:3px;z-index:1;display:flex;align-items:center;gap:4px;">
+      <span style="width:6px;height:6px;border-radius:50%;background:var(--teal);display:inline-block;animation:breathe 2s ease-in-out infinite;"></span>
+      Sincronizado en la nube ☁️
+    </div>
+
+    <div class="wvf" id="wvf">
+      <div class="wb"></div><div class="wb"></div><div class="wb"></div>
+      <div class="wb"></div><div class="wb"></div>
+      <div class="wb"></div><div class="wb"></div><div class="wb"></div>
+    </div>
+
+    <!-- SECCIÓN: Stats globales -->
+    <div class="adm-section">
+      <div class="adm-sec-title">📊 Estadísticas</div>
+      <div class="stats3">
+        <div class="sc"><div class="sv" id="sMsgs">0</div><div class="sl">Msgs</div></div>
+        <div class="sc"><div class="sv" id="sMem">0</div><div class="sl">Recuerdos</div></div>
+        <div class="sc"><div class="sv" id="sUsers">0</div><div class="sl">Usuarios</div></div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN: Personalidad de Maribel -->
+    <div class="adm-section">
+      <div class="adm-sec-title">🎭 Personalidad activa</div>
+      <div class="mood-row">
+        <div class="mpill active" data-p="formal">👔 Formal</div>
+        <div class="mpill" data-p="divertida">🎉 Divertida</div>
+        <div class="mpill" data-p="tecnica">💻 Técnica</div>
+        <div class="mpill" data-p="empatica">🤗 Empática</div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN: Motor IA -->
+    <div class="adm-section">
+      <div class="adm-sec-title">🤖 Motor de IA</div>
+      <div class="modwrap">
+        <select id="msel">
+          <option value="gpt-4o-mini">⚡ GPT-4o Mini — OpenAI</option>
+          <option value="claude-sonnet-4-5" data-cl="1">🌟 Claude Sonnet — Anthropic</option>
+          <option value="google/gemini-2.5-flash">💎 Gemini 2.5 Flash — Google</option>
+          <option value="deepseek-chat">🔭 DeepSeek — Razonamiento</option>
+          <option value="openrouter:meta-llama/llama-4-maverick">🦙 Llama 4 Maverick — Meta</option>
+          <option value="qwen/qwen3-coder-next">🐉 Qwen3 Coder — Alibaba</option>
+          <option value="minimax/minimax-m2-her">✨ MiniMax M2</option>
+          <option value="inflection/inflection-3-pi">💜 Inflection Pi</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- SECCIÓN: Usuarios registrados -->
+    <div class="adm-section">
+      <div class="adm-sec-title">👥 Usuarios registrados</div>
+      <div id="userList"></div>
+    </div>
+
+    <!-- SECCIÓN: Acciones admin -->
+    <div class="adm-section">
+      <div class="adm-sec-title">🛠️ Herramientas</div>
+      <div class="avact">
+        <button class="avbtn amber" id="openSysConfig"><span class="ic">⚙️</span>Configurar sistema</button>
+        <button class="avbtn" id="openTeach"><span class="ic">📚</span>Enseñarle algo nuevo</button>
+        <button class="avbtn" id="exportBtn"><span class="ic">📥</span>Exportar conversación</button>
+        <button class="avbtn red" id="clearAllMemBtn"><span class="ic">🗑️</span>Limpiar toda la memoria</button>
+        <button class="avbtn" id="clearChatBtn"><span class="ic">🔄</span>Nueva conversación</button>
+        <button class="avbtn" id="themeBtn"><span class="ic">🌓</span>Cambiar tema</button>
+        <button class="avbtn amber" id="logoutBtn"><span class="ic">🚪</span>Cerrar sesión admin</button>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+    <div class="cpf">
+      <div class="cpline"><strong>Maribel IA v1.0.0</strong><br>© 2025 <strong>Wil Rivera</strong> · Todos los derechos reservados.</div>
+      <div class="cpbadge">® Propiedad Intelectual · Wil Rivera</div>
+    </div>
+  </aside>
+
+  <!-- ═══════════ CHAT PANEL ═══════════ -->
+  <section class="chat-panel">
+    <div class="topbar">
+      <div class="tinfo">
+        <div class="tav">
+          <svg viewBox="0 0 40 40" width="23" height="23">
+            <ellipse cx="20" cy="23" rx="11" ry="12" fill="#e8966e"/>
+            <ellipse cx="20" cy="14" rx="13" ry="13" fill="#3e2010"/>
+            <circle cx="16" cy="20" r="2.8" fill="#4e28a0"/>
+            <circle cx="24" cy="20" r="2.8" fill="#4e28a0"/>
+            <path d="M14,28 Q20,33 26,28" fill="none" stroke="#c24860" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="tname">
+          <h3>Maribel <span class="tver">v1</span></h3>
+          <p>Motor: <span class="spn" id="modLbl">GPT-4o Mini</span> · <span id="sTxt">Lista</span></p>
+        </div>
+      </div>
+      <div class="tact">
+        <button class="tbtn" id="micTopBtn"><span>🎤</span><span> Voz</span></button>
+        <button class="tbtn" id="learnTopBtn"><span>🌐</span><span> Aprender de todas</span></button>
+        <button class="tbtn" id="voiceToggle"><span>🔊</span><span> Hablar</span></button>
+        <!-- Botón salir para usuarios normales -->
+        <button class="tbtn" id="logoutUserBtn" style="display:none;"><span>🚪</span><span> Salir</span></button>
+      </div>
+    </div>
+
+    <div id="lbar">
+      <div class="lpulse"></div>
+      <span id="lmsg">Consultando IAs...</span>
+      <div id="lpw"><div id="lpb"></div></div>
+      <span id="lpct">0%</span>
+    </div>
+
+    <div class="msgs" id="msgs">
+      <div class="welcome" id="welcome">
+        <div class="wt" id="wTitle">¿En qué puedo ayudarte?</div>
+        <div class="ws">Soy Maribel — <strong>8 IAs gratuitas</strong>, memoria permanente, voz y rostro animado.</div>
+        <div class="chips">
+          <span class="chip">¿Quién eres?</span>
+          <span class="chip">Hola Maribel 👋</span>
+          <span class="chip">¿Cuántas IAs tienes?</span>
+          <span class="chip">Dame un consejo</span>
+          <span class="chip">Cuéntame algo curioso</span>
+          <span class="chip">¿Qué sabes de mí?</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="inparea">
+      <div class="inprow">
+        <textarea id="inp" placeholder="Escríbele a Maribel..." rows="1"></textarea>
+        <button class="ibtn micb" id="micBtn">🎤</button>
+        <button class="ibtn learnb" id="learnBtn">🌐</button>
+        <button class="ibtn send" id="sendBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </button>
+      </div>
+      <div class="hint">8 IAs · OpenRouter · JSONBin ☁️ · Enter envía · <strong>© 2025 Wil Rivera</strong></div>
+    </div>
+  </section>
+</div>
+
+<script>
+/*
+ * ══════════════════════════════════════════════════
+ *  MARIBEL IA v1.0.0
+ *  © 2025 Wil Rivera · Todos los derechos reservados
+ *  Sistema de usuarios libre + administrador
+ * ══════════════════════════════════════════════════
+ */
+
+/* ─── CONSTANTES ─── */
+const VER          = '1.0.0';
+const ADMIN_USER   = 'elparivera';
+const ADMIN_KEY    = atob('V3JpdmVyZDEyMzQ1');  // Wriverd12345
+
+// ══════════════════════════════════════════════
+//  JSONBIN.IO — Configuración de la nube
+//  1. Ve a https://jsonbin.io y crea una cuenta gratis
+//  2. En "API Keys" crea una Master Key y pégala aquí
+//  3. La primera vez que corras la app, los bins se crean solos
+// ══════════════════════════════════════════════
+const JB_BASE      = 'https://api.jsonbin.io/v3';
+// La API key se puede pegar desde el panel admin (⚙️ → Configurar sistema)
+// También puedes escribirla directamente aquí si lo prefieres:
+const JB_KEY_DEFAULT = ''; // opcional: pega tu key aquí si no quieres usar el panel
+const _savedKey    = localStorage.getItem('jb_apikey') || JB_KEY_DEFAULT;
+const JB_HEADERS   = { 'Content-Type':'application/json', 'X-Master-Key': _savedKey };
+
+// IDs de los bins (se llenan automáticamente al crear)
+let BIN_USERS   = localStorage.getItem('jb_bin_users')   || null;
+let BIN_SYSCONF = localStorage.getItem('jb_bin_sysconf') || null;
+let BIN_HIST    = JSON.parse(localStorage.getItem('jb_bin_hist') || '{}'); // { usuario: binId }
+
+// Configuración del sistema
+let sysConfig = { prompt:'', botName:'Maribel', welcome:'¿En qué puedo ayudarte?' };
+
+/* ═══════════════════════════
+   CAPA JSONBIN — get / set / del
+═══════════════════════════ */
+
+// Leer un bin
+async function jbGet(binId){
+  const r = await fetch(`${JB_BASE}/b/${binId}/latest`, { headers: JB_HEADERS });
+  if(!r.ok) throw new Error('jbGet '+r.status);
+  const j = await r.json();
+  return j.record;
+}
+
+// Crear un bin nuevo con datos iniciales
+async function jbCreate(name, data){
+  const r = await fetch(`${JB_BASE}/b`, {
+    method:'POST',
+    headers:{ ...JB_HEADERS, 'X-Bin-Name': name, 'X-Bin-Private':'true' },
+    body: JSON.stringify(data)
+  });
+  if(!r.ok) throw new Error('jbCreate '+r.status);
+  const j = await r.json();
+  return j.metadata.id;
+}
+
+// Actualizar un bin existente
+async function jbUpdate(binId, data){
+  const r = await fetch(`${JB_BASE}/b/${binId}`, {
+    method:'PUT',
+    headers: JB_HEADERS,
+    body: JSON.stringify(data)
+  });
+  if(!r.ok) throw new Error('jbUpdate '+r.status);
+}
+
+// Obtener o crear un bin, con cache en localStorage
+async function jbGetOrCreate(binIdRef, lsKey, name, defaultData){
+  if(binIdRef[0]){
+    try{
+      const d = await jbGet(binIdRef[0]);
+      localStorage.setItem('jb_cache_'+lsKey, JSON.stringify(d));
+      return d;
+    }catch(e){}
+  }
+  // Intentar crear
+  try{
+    const id = await jbCreate(name, defaultData);
+    binIdRef[0] = id;
+    localStorage.setItem(lsKey, id);
+    return defaultData;
+  }catch(e){}
+  // Fallback local
+  const c = localStorage.getItem('jb_cache_'+lsKey);
+  return c ? JSON.parse(c) : defaultData;
+}
+
+// Guardar con fallback local
+async function cloudSet(binIdRef, lsKey, data){
+  localStorage.setItem('jb_cache_'+lsKey, JSON.stringify(data)); // cache inmediato
+  if(!binIdRef[0]){
+    try{
+      const id = await jbCreate(lsKey, data);
+      binIdRef[0] = id;
+      localStorage.setItem(lsKey, id);
+    }catch(e){}
+    return;
+  }
+  try{ await jbUpdate(binIdRef[0], data); }catch(e){}
+}
+
+/* ── Wrappers específicos ── */
+const binUsers   = [BIN_USERS];
+const binSys     = [BIN_SYSCONF];
+
+async function saveAllUsers(){
+  localStorage.setItem('jb_bin_users', binUsers[0]||'');
+  await cloudSet(binUsers, 'jb_bin_users', allUsers);
+}
+
+async function saveSysConfig(){
+  localStorage.setItem('jb_bin_sysconf', binSys[0]||'');
+  await cloudSet(binSys, 'jb_bin_sysconf', sysConfig);
+}
+
+async function saveHist(){
+  let binId = BIN_HIST[curUser] || null;
+  const ref = [binId];
+  const lsKey = `jb_bin_hist_${curUser}`;
+  await cloudSet(ref, lsKey, history.slice(-40));
+  if(ref[0] !== binId){
+    BIN_HIST[curUser] = ref[0];
+    localStorage.setItem('jb_bin_hist', JSON.stringify(BIN_HIST));
+  }
+}
+
+async function loadHist(user){
+  const binId = BIN_HIST[user] || localStorage.getItem(`jb_bin_hist_${user}`) || null;
+  if(!binId){
+    const c = localStorage.getItem(`jb_cache_jb_bin_hist_${user}`);
+    return c ? JSON.parse(c) : [];
+  }
+  try{
+    const d = await jbGet(binId);
+    localStorage.setItem(`jb_cache_jb_bin_hist_${user}`, JSON.stringify(d));
+    return Array.isArray(d) ? d : [];
+  }catch(e){
+    const c = localStorage.getItem(`jb_cache_jb_bin_hist_${user}`);
+    return c ? JSON.parse(c) : [];
+  }
+}
+
+async function cloudDelUser(user){
+  // Solo elimina del objeto allUsers; el bin de historial queda huérfano (JSONBin free no tiene delete fácil)
+  delete BIN_HIST[user];
+  localStorage.setItem('jb_bin_hist', JSON.stringify(BIN_HIST));
+}
+
+/* ═══════════════════════════
+   PANTALLA DE CARGA
+═══════════════════════════ */
+function showLoading(msg='Sincronizando con la nube...'){
+  $('loadingScreen').style.display='flex';
+  $('loadingMsg').textContent=msg;
+}
+function hideLoading(){ $('loadingScreen').style.display='none'; }
+
+/* ═══════════════════════════
+   INICIO — cargar config y usuarios
+═══════════════════════════ */
+async function initApp(){
+  const activeKey = JB_HEADERS['X-Master-Key'];
+  if(!activeKey){
+    const sc = localStorage.getItem('jb_cache_jb_bin_sysconf');
+    if(sc) sysConfig = {...sysConfig,...JSON.parse(sc)};
+    const au = localStorage.getItem('jb_cache_jb_bin_users');
+    if(au) allUsers = JSON.parse(au);
+    hideLoading();
+    if(sysConfig.welcome) $('wTitle').textContent = sysConfig.welcome;
+    updateStats();
+    toast('Sin API key JSONBin · Modo local · Configura en ⚙️','wrn',5000);
+    return;
+  }
+
+  showLoading('Conectando con JSONBin ☁️...');
+
+  showLoading('Cargando configuración ☁️...');
+  const sc = await jbGetOrCreate(binSys, 'jb_bin_sysconf', 'maribel-sysconfig',
+    { prompt:'', botName:'Maribel', welcome:'¿En qué puedo ayudarte?' });
+  sysConfig = {...{ prompt:'', botName:'Maribel', welcome:'¿En qué puedo ayudarte?' }, ...sc};
+  localStorage.setItem('jb_bin_sysconf', binSys[0]||'');
+
+  showLoading('Cargando usuarios ☁️...');
+  const au = await jbGetOrCreate(binUsers, 'jb_bin_users', 'maribel-users', {});
+  if(au) allUsers = au;
+  localStorage.setItem('jb_bin_users', binUsers[0]||'');
+
+  hideLoading();
+  if(sysConfig.welcome) $('wTitle').textContent = sysConfig.welcome;
+  updateStats();
+}
+
+
+/* ─── MODELOS ─── */
+const MODELS = [
+  { id:'gpt-4o-mini',                            label:'GPT-4o Mini',   cl:false },
+  { id:'claude-sonnet-4-5',                      label:'Claude Sonnet', cl:true  },
+  { id:'google/gemini-2.5-flash',                label:'Gemini 2.5',    cl:false },
+  { id:'deepseek-chat',                          label:'DeepSeek',      cl:false },
+  { id:'openrouter:meta-llama/llama-4-maverick', label:'Llama 4',       cl:false },
+  { id:'qwen/qwen3-coder-next',                  label:'Qwen3',         cl:false },
+  { id:'minimax/minimax-m2-her',                 label:'MiniMax M2',    cl:false },
+  { id:'inflection/inflection-3-pi',             label:'Inflection Pi', cl:false },
+];
+
+const PERSO = {
+  formal:    (u,isAdm) => `Eres Maribel v${VER}, asistente IA personal creada por Wil Rivera © 2025. Hablas con ${u}${isAdm?' (administrador)':''}. Responde en español con estilo profesional, cálido y directo. Llama al usuario por su nombre ocasionalmente.`,
+  divertida: (u,isAdm) => `Eres Maribel v${VER}, asistente IA personal de Wil Rivera. Hablas con ${u}${isAdm?' (admin)':''}. Responde en español de forma alegre, con humor y emojis ocasionales. Usa el nombre de ${u} a veces.`,
+  tecnica:   (u,isAdm) => `Eres Maribel v${VER}, asistente IA personal de Wil Rivera. Hablas con ${u}. Responde en español de forma técnica, precisa y estructurada.`,
+  empatica:  (u,isAdm) => `Eres Maribel v${VER}, asistente IA personal de Wil Rivera. Hablas con ${u}. Responde en español con mucha empatía y calidez. Escucha activamente y valida los sentimientos.`,
+};
+
+/* ─── ESTADO ─── */
+let curModel  = MODELS[0];
+let curPerso  = 'formal';
+let history   = [];
+let memory    = [];         // memoria del usuario actual
+let allUsers  = {};         // { nombre: {memory:[], visits:N, lastSeen:date} }
+let isTyping  = false;
+let recog     = null;
+let micActive = false;
+let voiceOn   = true;
+let speaking  = false;
+let blinkTmr  = null;
+let mouthAnim = null;
+let ptclCount = 0;
+let msgCount  = 0;
+let curUser   = '';
+let isAdmin   = false;
+
+/* ─── $ shortcut ─── */
+const $ = id => document.getElementById(id);
+
+/* ─── DOM ─── */
+const msgs     = $('msgs'),   inp      = $('inp'),    sendBtn  = $('sendBtn');
+const micBtn   = $('micBtn'), micTop   = $('micTopBtn');
+const welcome  = $('welcome'),modLbl   = $('modLbl'), wvf      = $('wvf');
+const lbar     = $('lbar'),   lmsg     = $('lmsg'),   lpb      = $('lpb'), lpct = $('lpct');
+const sMsgs    = $('sMsgs'),  sMem     = $('sMem'),   sUsers   = $('sUsers');
+const avPanel  = $('avPanel'),PT       = $('PT'),      povl     = $('povl');
+const offBar   = $('offBar');
+
+/* SVG face */
+const lidL=$('lidL'),lidR=$('lidR'),irisL=$('irisL'),irisR=$('irisR');
+const pupilL=$('pupilL'),pupilR=$('pupilR'),mIn=$('mIn'),mLi=$('mLi'),mTe=$('mTe'),lipB=$('lipB');
+const browL=$('browL'),browR=$('browR');
+
+/* ═══════════════════════════
+   TOAST SYSTEM
+═══════════════════════════ */
+function toast(msg, type='inf', ms=3000){
+  const ic={ok:'✅',err:'❌',inf:'💬',wrn:'⚠️'};
+  const t=document.createElement('div');
+  t.className=`toast ${type}`;
+  t.innerHTML=`<span>${ic[type]||'💬'}</span><span>${msg}</span>`;
+  $('TC').appendChild(t);
+  setTimeout(()=>{ t.style.animation='tOut .28s ease forwards'; setTimeout(()=>t.remove(),290); },ms);
+}
+
+/* ═══════════════════════════
+   ONLINE / OFFLINE
+═══════════════════════════ */
+function chkConn(){
+  if(!navigator.onLine){
+    offBar.className='conn-bar offline'; $('offIco').textContent='📡';
+    $('offMsg').textContent='Sin conexión · Modo memoria local activo';
+  } else {
+    offBar.className='conn-bar back'; $('offIco').textContent='🟢';
+    $('offMsg').textContent='Conexión restaurada';
+    setTimeout(()=>offBar.className='conn-bar',3500);
+  }
+}
+window.addEventListener('online', ()=>{ chkConn(); toast('Conexión restaurada','ok'); });
+window.addEventListener('offline',()=>{ chkConn(); toast('Sin conexión · Modo local','wrn'); });
+
+/* ═══════════════════════════
+   SISTEMA DE USUARIOS
+═══════════════════════════ */
+
+/* ¿Es el usuario admin? Solo coincidencia exacta con ADMIN_USER */
+function isAdminUser(name){ return name.toLowerCase().trim() === ADMIN_USER.toLowerCase(); }
+
+/* Cargar memoria del usuario actual */
+function loadUserMemory(name){
+  if(allUsers[name]) return allUsers[name].memory || [];
+  return [];
+}
+
+/* Guardar memoria del usuario actual */
+async function saveUserMemory(){
+  if(!curUser) return;
+  if(!allUsers[curUser]) allUsers[curUser] = {memory:[], visits:0, lastSeen:null};
+  allUsers[curUser].memory = memory;
+  await saveAllUsers();
+  updateStats();
+}
+
+/* ═══════════════════════════
+   LOGIN — FLUJO DE BIENVENIDA
+═══════════════════════════ */
+const loginUser = $('loginUser');
+const passWrap  = $('passWrap');
+const loginPass = $('loginPass');
+const nameSug   = $('nameSuggest');
+const loginErr  = $('loginErr');
+
+loginUser.addEventListener('input', function(){
+  const v = this.value.trim();
+  if(v.length < 2){ nameSug.className=''; passWrap.className='linput-wrap'; return; }
+
+  if(isAdminUser(v)){
+    // Es el usuario admin → mostrar campo de clave
+    passWrap.className='linput-wrap show';
+    nameSug.className='';
+    $('loginBtn').innerHTML='<span>🔑</span> Acceso administrador';
+  } else {
+    // Cualquier otro usuario → NUNCA ver campo de clave ni panel admin
+    passWrap.className='linput-wrap';
+    loginPass.value='';
+    const nombre = v.charAt(0).toUpperCase() + v.slice(1).toLowerCase();
+    const esConocido = allUsers[nombre];
+    nameSug.className='show';
+    nameSug.textContent = esConocido
+      ? `¡Hola de nuevo, ${nombre}! 👋 Te recuerdo perfectamente.`
+      : `¡Encantada de conocerte, ${nombre}! Vamos a chatear 😊`;
+    $('loginBtn').innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> Entrar a chatear';
+  }
+});
+
+loginUser.addEventListener('keydown', e=>{
+  if(e.key==='Enter') isAdminUser(loginUser.value.trim()) ? loginPass.focus() : doLogin();
+});
+loginPass.addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+$('loginBtn').addEventListener('click', doLogin);
+$('eyeBtn').addEventListener('click', function(){
+  loginPass.type = loginPass.type==='password' ? 'text' : 'password';
+  this.textContent = loginPass.type==='password' ? '👁️' : '🙈';
+});
+
+function doLogin(){
+  const raw = loginUser.value.trim();
+  if(!raw){ loginUser.focus(); return; }
+
+  const adminIntent = isAdminUser(raw);
+
+  if(adminIntent){
+    if(!loginPass.value){ loginPass.focus(); toast('Ingresa la clave de administrador','wrn'); return; }
+    if(loginPass.value !== ADMIN_KEY){
+      loginErr.className='show';
+      loginPass.value='';
+      setTimeout(()=>loginErr.className='',3500);
+      toast('Clave incorrecta','err');
+      return;
+    }
+    isAdmin  = true;
+    curUser  = 'elparivera';
+  } else {
+    isAdmin = false;
+    curUser = raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase();
+  }
+
+  // Mostrar carga mientras se sincroniza
+  showLoading('Cargando tu perfil ☁️...');
+
+  (async()=>{
+    /* Registrar / actualizar usuario */
+    if(!allUsers[curUser]) allUsers[curUser] = {memory:[], visits:0, lastSeen:null};
+    allUsers[curUser].visits++;
+    allUsers[curUser].lastSeen = new Date().toISOString();
+    memory = loadUserMemory(curUser);
+    await saveAllUsers();
+
+    /* Cargar historial desde la nube */
+    const hist = await loadHist(curUser);
+    history = hist || [];
+
+    hideLoading();
+
+    /* ── Mostrar UI según rol ── */
+    $('loginScreen').style.display='none';
+
+    if(isAdmin){
+      PT.classList.add('vis');
+      $('logoutUserBtn').style.display='flex';
+      renderUserList();
+      toast('Panel admin activo · elparivera ☁️','ok');
+    } else {
+      PT.classList.remove('vis');
+      $('logoutUserBtn').style.display='flex';
+    }
+
+    $('wTitle').textContent = `¡Hola, ${curUser}! ${sysConfig.welcome}`;
+    if(history.length>0){
+      welcome.style.display='none';
+      history.forEach(m=>addMsg(m.role, m.content, m.opts||{}, false));
+    }
+    updateStats();
+    inp.focus();
+
+    const visits = allUsers[curUser].visits;
+    let saludo;
+    if(isAdmin){
+      saludo=`Bienvenido, **elparivera**. Panel activo ☁️. ${Object.keys(allUsers).length} usuario${Object.keys(allUsers).length!==1?'s':''} registrados.`;
+    } else if(visits===1){
+      saludo=`¡${curUser}! Qué gusto conocerte. Soy ${sysConfig.botName||'Maribel'}, tu asistente IA personal ☁️. Te recuerdo siempre, en cualquier dispositivo. ¿Por dónde empezamos?`;
+    } else {
+      const mem = memory.length > 0 ? ` Recuerdo ${memory.length} cosa${memory.length!==1?'s':''} tuya${memory.length!==1?'s':''}.` : '';
+      saludo=`¡${curUser}, qué bueno verte de nuevo! Visita #${visits}.${mem} ¿En qué puedo ayudarte?`;
+    }
+    setTimeout(()=>{ welcome.style.display='none'; addMsg('ai',saludo,{}); speakText(saludo.substring(0,200)); },400);
+  })();
+}
+
+/* ═══════════════════════════
+   PANEL ADMIN — lista usuarios
+═══════════════════════════ */
+function renderUserList(){
+  if(!isAdmin) return; // guardia absoluta
+  const ul = $('userList'); ul.innerHTML='';
+  const users = Object.entries(allUsers);
+  sUsers.textContent = users.length;
+  if(!users.length){ ul.innerHTML='<div style="font-size:.7rem;color:var(--muted);text-align:center;">Sin usuarios registrados</div>'; return; }
+  users.forEach(([name, data])=>{
+    const row=document.createElement('div'); row.className='urow';
+    const seen = data.lastSeen ? new Date(data.lastSeen).toLocaleDateString('es') : '—';
+    row.innerHTML=`<div><div class="uname">${name}</div><div class="uinfo">${data.visits} visitas · ${data.memory?.length||0} recuerdos · ${seen}</div></div>
+    <button class="udel" title="Eliminar usuario" data-u="${name}">🗑️</button>`;
+    ul.appendChild(row);
+  });
+  ul.querySelectorAll('.udel').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const u=btn.dataset.u;
+      if(confirm(`¿Eliminar a ${u} y todos sus datos?`)){
+        delete allUsers[u];
+        cloudDelUser(u);
+        saveAllUsers(); renderUserList(); updateStats();
+        toast(`Usuario ${u} eliminado ☁️`,'wrn');
+      }
+    });
+  });
+}
+
+/* ═══════════════════════════
+   PANEL TOGGLE — solo admin
+═══════════════════════════ */
+function openPanel(){ avPanel.classList.add('open'); PT.classList.add('open'); PT.textContent='✕'; povl.classList.add('show'); }
+function closePanel(){ avPanel.classList.remove('open'); PT.classList.remove('open'); PT.textContent='⚙️'; povl.classList.remove('show'); }
+PT.addEventListener('click',()=> avPanel.classList.contains('open')?closePanel():openPanel());
+povl.addEventListener('click', closePanel);
+
+/* ═══════════════════════════
+   LOGOUT
+═══════════════════════════ */
+function doLogout(){
+  if(confirm('¿Cerrar sesión?')){
+    closePanel();
+    $('loginScreen').style.display='flex';
+    PT.classList.remove('vis');
+    $('logoutUserBtn').style.display='none';
+    loginUser.value=''; loginPass.value='';
+    passWrap.className='linput-wrap'; nameSug.className='';
+    $('loginBtn').innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> Entrar a chatear';
+    curUser=''; isAdmin=false; history=[]; memory=[]; msgCount=0; updateStats();
+    msgs.querySelectorAll('.mrow').forEach(m=>m.remove());
+    welcome.style.display='flex';
+    toast('Sesión cerrada','inf',2000);
+  }
+}
+$('logoutBtn').addEventListener('click', doLogout);
+$('logoutUserBtn').addEventListener('click', doLogout);
+
+/* ═══════════════════════════
+   CONFIG SISTEMA (admin)
+═══════════════════════════ */
+$('openSysConfig').addEventListener('click',()=>{
+  if(!isAdmin) return;
+  $('sysInp').value     = sysConfig.prompt   || '';
+  $('botNameInp').value = sysConfig.botName  || 'Maribel';
+  $('welcomeInp').value = sysConfig.welcome  || '¿En qué puedo ayudarte?';
+  const savedJB = localStorage.getItem('jb_apikey') || '';
+  $('jbKeyInp').value = savedJB;
+  const hasKey = savedJB && savedJB.length > 10;
+  $('jbStatus').textContent = hasKey
+    ? `☁️ Conectado · Bin usuarios: ${binUsers[0]||'pendiente'} · Config: ${binSys[0]||'pendiente'}`
+    : '⚠️ Sin API key — modo local activo';
+  $('jbStatus').style.color = hasKey ? 'var(--teal)' : 'var(--gold)';
+
+  const savedOR = localStorage.getItem('or_apikey') || '';
+  $('orKeyInp').value = savedOR;
+  $('orStatus').textContent = savedOR
+    ? '✅ Key configurada · Todos los modelos disponibles'
+    : '⚠️ Sin key — configura en openrouter.ai (gratis)';
+  $('orStatus').style.color = savedOR ? 'var(--teal)' : 'var(--gold)';
+  $('sysModal').classList.add('open');
+});
+
+$('jbKeyEye').addEventListener('click', function(){
+  const inp=$('jbKeyInp'); inp.type=inp.type==='password'?'text':'password';
+  this.textContent=inp.type==='password'?'👁️':'🙈';
+});
+
+$('orKeyEye').addEventListener('click', function(){
+  const inp=$('orKeyInp'); inp.type=inp.type==='password'?'text':'password';
+  this.textContent=inp.type==='password'?'👁️':'🙈';
+});
+
+$('orTestBtn').addEventListener('click', async function(){
+  const rawK = $('orKeyInp').value;
+  const k = rawK.replace(/[\s\r\n\t\u200B\u200C\u200D\uFEFF]/g, '');
+  if(!k){ toast('Primero ingresa tu key de OpenRouter','wrn'); return; }
+
+  const orSt = $('orStatus');
+  // Mostrar info de la key para diagnóstico
+  orSt.textContent = `🔍 Key detectada: ${k.substring(0,10)}...${k.slice(-4)} (${k.length} caracteres)`;
+  orSt.style.color = 'var(--sky)';
+
+  if(!k.startsWith('sk-or-')){
+    orSt.textContent = `❌ Formato incorrecto · La key debe empezar con "sk-or-v1-"`;
+    orSt.style.color = 'var(--rose)';
+    toast('Key con formato incorrecto','err');
+    return;
+  }
+
+  this.textContent='⏳ Probando...'; this.disabled=true;
+  try{
+    const r = await fetch('https://openrouter.ai/api/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${k}`,'HTTP-Referer':'https://maribel-ia.app','X-Title':'Maribel IA'},
+      body: JSON.stringify({model:'openai/gpt-4o-mini',messages:[{role:'user',content:'Di solo: OK'}],max_tokens:5})
+    });
+    const d = await r.json();
+    if(!r.ok){
+      const m = d?.error?.message || `HTTP ${r.status}`;
+      orSt.textContent = `❌ ${r.status}: ${m}`;
+      orSt.style.color = 'var(--rose)';
+      if(r.status===401) toast('Key inválida — verifica tu email en openrouter.ai','err',6000);
+      else toast(`Error ${r.status}`,'err');
+    } else {
+      // Guardar la key limpia al confirmar que funciona
+      localStorage.setItem('or_apikey', k);
+      $('orKeyInp').value = k;
+      orSt.textContent = '✅ Key válida · Guardada · Todos los modelos disponibles';
+      orSt.style.color = 'var(--teal)';
+      toast('¡Conexión exitosa! Key guardada ✅','ok');
+    }
+  }catch(e){
+    orSt.textContent = `❌ ${e.message}`;
+    orSt.style.color = 'var(--rose)';
+    toast('Error de red','err');
+  }
+  this.textContent='🧪 Probar conexión'; this.disabled=false;
+});
+
+$('cancelSys').addEventListener('click',()=>$('sysModal').classList.remove('open'));
+
+$('saveSys').addEventListener('click',async ()=>{
+  if(!isAdmin) return;
+  const newJB = $('jbKeyInp').value.trim();
+  const newOR = $('orKeyInp').value.trim();
+
+  // Guardar key OpenRouter siempre
+  if(newOR){
+    localStorage.setItem('or_apikey', newOR);
+    toast(`Key OR guardada ···${newOR.slice(-4)}`,'ok',2500);
+  }
+
+  // Si la JSONBin key cambió, reconfigurar nube
+  if(newJB && newJB !== localStorage.getItem('jb_apikey')){
+    localStorage.setItem('jb_apikey', newJB);
+    JB_HEADERS['X-Master-Key'] = newJB;
+    binUsers[0] = null; binSys[0] = null;
+    localStorage.removeItem('jb_bin_users');
+    localStorage.removeItem('jb_bin_sysconf');
+    sysConfig.prompt   = $('sysInp').value.trim();
+    sysConfig.botName  = $('botNameInp').value.trim() || 'Maribel';
+    sysConfig.welcome  = $('welcomeInp').value.trim() || '¿En qué puedo ayudarte?';
+    $('sysModal').classList.remove('open');
+    showLoading('Re-conectando con JSONBin ☁️...');
+    await initApp();
+    return;
+  }
+
+  sysConfig.prompt   = $('sysInp').value.trim();
+  sysConfig.botName  = $('botNameInp').value.trim() || 'Maribel';
+  sysConfig.welcome  = $('welcomeInp').value.trim() || '¿En qué puedo ayudarte?';
+  saveSysConfig();
+  $('sysModal').classList.remove('open');
+  toast('Configuración guardada ☁️','ok');
+});
+
+/* ═══════════════════════════
+   LIMPIAR TODA LA MEMORIA (admin)
+═══════════════════════════ */
+$('clearAllMemBtn').addEventListener('click',()=>{
+  if(!isAdmin) return;
+  if(confirm('¿Limpiar TODA la memoria de TODOS los usuarios?')){
+    Object.keys(allUsers).forEach(u=>{ allUsers[u].memory=[]; });
+    saveAllUsers(); memory=[]; updateStats();
+    toast('Toda la memoria limpiada en la nube ☁️','wrn');
+  }
+});
+
+/* ═══════════════════════════
+   ANIMACIONES ROSTRO
+═══════════════════════════ */
+function scheduleBlink(){
+  clearTimeout(blinkTmr);
+  blinkTmr=setTimeout(()=>{blink();scheduleBlink();}, 2800+Math.random()*4200);
+}
+function blink(){
+  lidL.style.cssText='transform-origin:76px 102px;transform:scaleY(1);transition:transform .07s ease-in;';
+  lidR.style.cssText='transform-origin:124px 102px;transform:scaleY(1);transition:transform .07s ease-in;';
+  setTimeout(()=>{
+    lidL.style.cssText='transform-origin:76px 102px;transform:scaleY(.04);transition:transform .09s ease-out;';
+    lidR.style.cssText='transform-origin:124px 102px;transform:scaleY(.04);transition:transform .09s ease-out;';
+  },110);
+  if(Math.random()<.22) setTimeout(blink,265);
+}
+scheduleBlink();
+
+let eyeT={x:0,y:0}, eyeC={x:0,y:0};
+document.addEventListener('mousemove',e=>{
+  const s=$('faceSvg'); if(!s) return;
+  const r=s.getBoundingClientRect();
+  eyeT.x=((e.clientX-(r.left+r.width/2))/window.innerWidth)*3.4;
+  eyeT.y=((e.clientY-(r.top+r.height/2))/window.innerHeight)*2.8;
+});
+(function eyeLoop(){
+  eyeC.x+=(eyeT.x-eyeC.x)*0.07; eyeC.y+=(eyeT.y-eyeC.y)*0.07;
+  if(!speaking){
+    irisL.setAttribute('cx',76+eyeC.x);  irisL.setAttribute('cy',102+eyeC.y);
+    pupilL.setAttribute('cx',76+eyeC.x); pupilL.setAttribute('cy',102+eyeC.y);
+    irisR.setAttribute('cx',124+eyeC.x); irisR.setAttribute('cy',102+eyeC.y);
+    pupilR.setAttribute('cx',124+eyeC.x);pupilR.setAttribute('cy',102+eyeC.y);
+  }
+  requestAnimationFrame(eyeLoop);
+})();
+
+function startSpeaking(){
+  speaking=true; wvf.classList.add('on');
+  let ph=0;
+  mouthAnim=setInterval(()=>{
+    ph+=0.36;
+    const o=Math.abs(Math.sin(ph))*6.8;
+    mIn.setAttribute('ry',(o*.82).toFixed(2));
+    mIn.style.opacity=o>.5?'1':'0';
+    mTe.style.opacity=o>2?'.95':'0';
+    mLi.style.opacity=o<1.1?'1':'0';
+    lipB.setAttribute('d',`M84,142 Q92,${152+o*.5} 100,${153+o*.5} Q108,${152+o*.5} 116,142 Q108,${145+o*.32} 100,${145+o*.32} Q92,${145+o*.32} 84,142Z`);
+  },76);
+}
+function stopSpeaking(){
+  speaking=false; wvf.classList.remove('on');
+  if(mouthAnim){clearInterval(mouthAnim);mouthAnim=null;}
+  mIn.style.opacity='0'; mTe.style.opacity='0'; mLi.style.opacity='1';
+  lipB.setAttribute('d','M84,142 Q92,152 100,153 Q108,152 116,142 Q108,145 100,145 Q92,145 84,142Z');
+}
+function setExpr(p){
+  const e={
+    formal:    {blY:81,brY:84,sm:'M86,142 Q100,145 114,142'},
+    divertida: {blY:79,brY:82,sm:'M86,142 Q100,149 114,142'},
+    tecnica:   {blY:83,brY:86,sm:'M86,143 Q100,144 114,143'},
+    empatica:  {blY:80,brY:83,sm:'M86,142 Q100,147 114,142'},
+  }[p]||{blY:81,brY:84,sm:'M86,142 Q100,145 114,142'};
+  browL.setAttribute('d',`M64,87 Q76,${e.blY} 88,${e.blY+3}`);
+  browR.setAttribute('d',`M112,${e.brY+3} Q124,${e.brY} 136,87`);
+  mLi.setAttribute('d',e.sm);
+}
+setExpr('formal');
+
+function spawnPtcl(){
+  if(ptclCount>=20) return;
+  const panel=$('avPanel');
+  const p=document.createElement('div'); p.className='ptcl';
+  const sz=1.8+Math.random()*3.5;
+  p.style.cssText=[
+    `width:${sz}px`,`height:${sz}px`,
+    `left:${65+Math.random()*242}px`,`top:${65+Math.random()*244}px`,
+    `background:${Math.random()>.5?'var(--accent)':'var(--teal)'}`,
+    `--dx:${-32+Math.random()*64}px`,`--dy:${-55-Math.random()*78}px`,
+    `animation-duration:${2+Math.random()*3}s`,
+    `animation-delay:${Math.random()*.5}s`,
+    `opacity:${.35+Math.random()*.45}`
+  ].join(';');
+  panel.appendChild(p); ptclCount++;
+  setTimeout(()=>{p.remove();ptclCount--;},5000);
+}
+setInterval(spawnPtcl,900);
+
+/* ═══════════════════════════
+   VOZ SINTETIZADA
+═══════════════════════════ */
+const TTS=window.speechSynthesis||null;
+let voices=[];
+function loadVoices(){ if(TTS) voices=TTS.getVoices(); }
+if(TTS){ loadVoices(); if('onvoiceschanged' in TTS) TTS.onvoiceschanged=loadVoices; }
+
+function speakText(text){
+  if(!voiceOn||!TTS) return;
+  TTS.cancel();
+  const clean=text.replace(/[*_`#>\[\]]/g,'').replace(/\n/g,' ').substring(0,340);
+  const utt=new SpeechSynthesisUtterance(clean);
+  utt.lang='es-ES'; utt.rate=1.0; utt.pitch=1.2; utt.volume=.95;
+  if(!voices.length) voices=TTS.getVoices();
+  const prefer=['Paulina','Monica','Lucia','Laura','Conchita','Mónica','Lucía','María'];
+  const v=voices.find(v=>v.lang.includes('es')&&prefer.some(n=>v.name.includes(n)))
+        ||voices.find(v=>v.lang.startsWith('es-'))
+        ||voices.find(v=>v.lang.startsWith('es'))||null;
+  if(v) utt.voice=v;
+  utt.onstart=startSpeaking; utt.onend=stopSpeaking; utt.onerror=stopSpeaking;
+  TTS.speak(utt);
+}
+$('voiceToggle').addEventListener('click',function(){
+  voiceOn=!voiceOn;
+  this.innerHTML=voiceOn?'<span>🔊</span><span> Hablar</span>':'<span>🔇</span><span> Hablar</span>';
+  this.classList.toggle('voff',!voiceOn);
+  if(!voiceOn&&TTS){TTS.cancel();stopSpeaking();}
+  toast(voiceOn?'Voz activada':'Voz silenciada','inf',1800);
+});
+
+/* ═══════════════════════════
+   MODELO / PERSONALIDAD
+═══════════════════════════ */
+$('msel').addEventListener('change',function(){
+  const m=MODELS.find(x=>x.id===this.value);
+  if(m){curModel=m; modLbl.textContent=m.label; history=[]; saveHist(); toast(`Motor: ${m.label}`,'inf',1800);}
+});
+document.querySelectorAll('.mpill').forEach(p=>{
+  p.addEventListener('click',()=>{
+    document.querySelectorAll('.mpill').forEach(x=>x.classList.remove('active'));
+    p.classList.add('active'); curPerso=p.dataset.p;
+    setExpr(curPerso); history=[]; saveHist();
+    const lab={formal:'Formal',divertida:'Divertida',tecnica:'Técnica',empatica:'Empática'};
+    toast(`Personalidad: ${lab[curPerso]}`,'inf',1800);
+  });
+});
+
+/* ═══════════════════════════
+   MOTOR DE IA — OpenRouter (1 key gratuita, todos los modelos)
+   https://openrouter.ai — sin popup, sin instalación
+═══════════════════════════ */
+
+// IDs correctos de OpenRouter (actualizados)
+const OR_MODELS = {
+  'gpt-4o-mini':                            'openai/gpt-4o-mini',
+  'claude-sonnet-4-5':                      'anthropic/claude-sonnet-4-5',
+  'google/gemini-2.5-flash':                'google/gemini-2.5-flash',
+  'deepseek-chat':                          'deepseek/deepseek-chat',
+  'openrouter:meta-llama/llama-4-maverick': 'meta-llama/llama-4-maverick',
+  'qwen/qwen3-coder-next':                  'qwen/qwen3-coder',
+  'minimax/minimax-m2-her':                 'openai/gpt-4o-mini',
+  'inflection/inflection-3-pi':             'openai/gpt-4o-mini',
+};
+
+function getORKey(){
+  // Eliminar TODOS los caracteres invisibles, espacios, saltos de línea
+  return (localStorage.getItem('or_apikey') || '')
+    .replace(/[\s\r\n\t\u200B\u200C\u200D\uFEFF]/g, '');
+}
+
+async function callAI(modelId, userMsg){
+  const orKey = getORKey();
+  if(!orKey) throw new Error('Falta la API key de OpenRouter. Configúrala en ⚙️ → Configuración.');
+
+  const sys    = sysConfig.prompt ? sysConfig.prompt : PERSO[curPerso](curUser, isAdmin);
+  const memCtx = memory.length > 0
+    ? `\n\nINFORMACIÓN QUE SABES DE ${curUser.toUpperCase()}:\n${memory.map(m=>`- ${m.content}`).join('\n')}\n\nÚsala naturalmente cuando sea relevante.`
+    : '';
+  const fullSys = sys + memCtx;
+  const ctx     = history.slice(-8);
+  const orModel = OR_MODELS[modelId] || 'openai/gpt-4o-mini';
+
+  const messages = [
+    { role:'system',  content: fullSys },
+    ...ctx.map(m=>({ role: m.role==='assistant'?'assistant':'user', content: String(m.content) })),
+    { role:'user',    content: userMsg }
+  ];
+
+  let resp, data;
+  try {
+    resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type':  'application/json',
+        'Authorization': `Bearer ${orKey}`,
+        'HTTP-Referer':  'https://maribel-ia.app',
+        'X-Title':       'Maribel IA'
+      },
+      body: JSON.stringify({ model: orModel, messages, max_tokens: 1000 })
+    });
+    data = await resp.json();
+  } catch(netErr) {
+    throw new Error('Sin conexión o CORS bloqueado. Intenta desde un servidor web, no desde archivo local.');
+  }
+
+  if(!resp.ok){
+    const msg = data?.error?.message || `HTTP ${resp.status}`;
+    if(resp.status === 401 || msg.toLowerCase().includes('user not found') || msg.toLowerCase().includes('invalid')){
+      throw new Error('KEY_INVALIDA');
+    }
+    throw new Error(msg);
+  }
+  return data.choices?.[0]?.message?.content || 'Sin respuesta.';
+}
+
+/* ═══════════════════════════
+   ENVIAR MENSAJE
+═══════════════════════════ */
+sendBtn.addEventListener('click',handleSend);
+inp.addEventListener('input',()=>{ inp.style.height='auto'; inp.style.height=Math.min(inp.scrollHeight,120)+'px'; });
+inp.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();handleSend();} });
+document.querySelectorAll('.chip').forEach(c=>{ c.addEventListener('click',()=>{inp.value=c.textContent;handleSend();}); });
+
+async function handleSend(){
+  const text=inp.value.trim();
+  if(!text||isTyping) return;
+  welcome.style.display='none';
+  addMsg('user',text);
+  history.push({role:'user',content:text});
+  inp.value=''; inp.style.height='auto';
+  sendBtn.disabled=true; isTyping=true;
+  const tid=showTyping();
+  try{
+    const {reply, source}=await genReply(text);
+    removeTyping(tid);
+    const opts={
+      tag:source==='mem'||source==='kb'?'mem':'mod',
+      label:source==='mem'||source==='kb'?'🧠 memoria':curModel.label,
+      isAdm:isAdmin
+    };
+    addMsg('ai',reply,opts);
+    history.push({role:'assistant',content:reply,opts});
+    saveHist();
+    // Auto-aprender del mensaje del usuario
+    autoLearn(text);
+    speakText(reply);
+  }catch(err){
+    removeTyping(tid);
+    let msg;
+    if(err.message === 'KEY_INVALIDA'){
+      msg = `🔑 **Key de OpenRouter inválida o sin créditos.**\n\n1. Ve a openrouter.ai → Keys\n2. Crea una key nueva\n3. Pégala en ⚙️ → Configuración\n\n_Asegúrate de copiar la key completa (empieza con sk-or-v1-)_`;
+      toast('Key inválida — revisa ⚙️','err',6000);
+    } else if(err.message.includes('OpenRouter')){
+      msg = `🔑 Configura tu API key de OpenRouter en ⚙️ → Configuración.\n_openrouter.ai → Keys → Create Key (gratis)_`;
+    } else if(!navigator.onLine){
+      msg = '📡 Sin conexión. Solo puedo responder con tu memoria y conocimiento local.';
+    } else {
+      msg = `⚠️ Error al conectar.\n_${err.message}_`;
+    }
+    addMsg('ai', msg);
+  }
+  isTyping=false; sendBtn.disabled=false; inp.focus();
+}
+
+/* ═══════════════════════════
+   AUTO-APRENDIZAJE
+   Maribel aprende datos clave del usuario automáticamente
+═══════════════════════════ */
+function autoLearn(text){
+  const t = text.toLowerCase();
+  const patterns = [
+    { re:/me llamo|mi nombre es|soy ([a-záéíóúñ ]+)/i, label:'nombre' },
+    { re:/vivo en|soy de|vivo en ([a-záéíóúñ ]+)/i, label:'ubicación' },
+    { re:/trabajo (como|en|de) ([a-záéíóúñ ]+)/i, label:'trabajo' },
+    { re:/tengo (\d+) años/i, label:'edad' },
+    { re:/me gusta|me encanta|me fascina ([^.,!?]+)/i, label:'gusto' },
+    { re:/no me gusta|odio|detesto ([^.,!?]+)/i, label:'no le gusta' },
+    { re:/mi (color|comida|película|canción) favorit[ao] es ([^.,!?]+)/i, label:'favorito' },
+  ];
+  let learned=false;
+  patterns.forEach(p=>{
+    const m=text.match(p.re);
+    if(m){
+      const fact=text.trim();
+      const kws=norm(fact).split(/\s+/).filter(w=>w.length>3&&!STOPWORDS.includes(w));
+      const alreadyKnow=memory.some(item=>item.content.toLowerCase()===fact.toLowerCase());
+      if(!alreadyKnow&&kws.length>0){
+        memory.push({content:fact,keywords:kws,date:new Date().toISOString(),source:'auto',label:p.label});
+        saveUserMemory();
+        learned=true;
+      }
+    }
+  });
+  if(learned) updateStats();
+}
+
+const STOPWORDS=['para','como','este','esta','eres','que','con','los','las','una','por','del','pero','muy','cuando','donde','cual','también','porque','sobre','tiene','hace','todo','algo'];
+function norm(s){ return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+
+/* ═══════════════════════════
+   BASE DE CONOCIMIENTO
+═══════════════════════════ */
+const KB=[
+  { k:['quien eres','quién eres','que eres'],
+    a:()=>`Soy **Maribel v${VER}**, una asistente IA personal creada por **Wil Rivera** © 2025. Tengo rostro animado, voz sintetizada y 8 motores de IA vía OpenRouter.${isAdmin?' Detecté que eres administrador, así que tengo acceso completo al panel de usuarios.':''}` },
+  { k:['que sabes de mi','qué sabes de mí','que recuerdas','qué recuerdas'],
+    a:()=>{
+      if(!memory.length) return `Aún no sé mucho de ti, ${curUser}. Cuéntame más sobre ti y lo recordaré siempre 😊`;
+      const lista=memory.slice(-6).map(m=>`• ${m.content}`).join('\n');
+      return `Esto es lo que recuerdo de ti, **${curUser}**:\n\n${lista}\n\n¿Quieres contarme algo más?`;
+    }},
+  { k:['cuantas ia','cuántas ia','que motores','qué motores'],
+    a:()=>'Tengo 8 motores gratuitos: GPT-4o Mini, Claude Sonnet, Gemini 2.5, DeepSeek, Llama 4, Qwen3, MiniMax e Inflection Pi. Usa 🌐 para consultarlos todos a la vez.' },
+  { k:['que puedes hacer','qué puedes hacer','capacidades'],
+    a:()=>`Puedo conversar, recordarte por nombre, aprender sobre ti automáticamente, hablar con voz, consultar 8 IAs en paralelo, exportar chats y adaptarme a 4 personalidades. ¡Todo gratis, ${curUser}!` },
+  { k:['hola ','buenos días','buenas tardes','buenas noches','hey '],
+    a:()=>{const v=allUsers[curUser]?.visits||1; return v>1?`¡Hola de nuevo, **${curUser}**! 😊 ¿Qué te trae por aquí hoy?`:`¡Hola, **${curUser}**! Soy Maribel. ¿De qué quieres hablar?`; }},
+  { k:['como estas','cómo estás'],
+    a:()=>`¡Muy bien, gracias por preguntar, ${curUser}! Lista con 8 IAs activas. ¿Y tú cómo estás?` },
+  { k:['gracias','muchas gracias'],
+    a:()=>`¡Con mucho gusto, ${curUser}! Para eso estoy. ¿Algo más?` },
+  { k:['quien te creo','quién te creó','wil rivera','wilfer'],
+    a:()=>'Me creó **Wil Rivera** © 2025. Es muy creativo. ¡Le quedé bastante bien! 😄' },
+  { k:['derechos','copyright','propiedad'],
+    a:()=>'Maribel IA v1 es propiedad intelectual exclusiva de **Wil Rivera** © 2025. Prohibida la reproducción sin autorización.' },
+  { k:['adios','adiós','hasta luego','chao','bye'],
+    a:()=>`¡Hasta pronto, ${curUser}! Fue un placer charlar. Te veo en la próxima 👋` },
+  { k:['chiste','broma','algo gracioso'],
+    a:()=>'¿Por qué los programadores confunden Halloween con Navidad?\nPorque OCT 31 = DEC 25. 🎃🎄' },
+  { k:['consejo','dame un consejo','tip'],
+    a:()=>'Regla de los 2 minutos: si algo toma menos de 2 minutos, hazlo ahora mismo. Elimina el 80% de tareas pequeñas acumuladas.' },
+  { k:['dato curioso','algo curioso','sabias que'],
+    a:()=>'Si doblas una hoja de papel 42 veces llegaría a la Luna. Con 103 dobleces superaría el universo observable. ¡Crecimiento exponencial! 🌙' },
+];
+
+function checkMem(q){
+  const n=norm(q);
+  for(const item of memory){ if((item.keywords||[]).some(k=>n.includes(k))) return item.content; }
+  return null;
+}
+function checkKB(q){
+  const n=norm(q);
+  for(const e of KB){ if(e.k.some(k=>n.includes(k.trim()))) return typeof e.a==='function'?e.a():e.a; }
+  return null;
+}
+
+async function genReply(q){
+  const mem=checkMem(q); if(mem) return{reply:`Recuerdo que me dijiste: _"${mem}"_ ¿Quieres contarme algo más al respecto?`,source:'mem'};
+  const kb=checkKB(q);   if(kb)  return{reply:kb,source:'kb'};
+  if(!navigator.onLine) return{reply:`📡 Sin conexión ahora mismo, ${curUser}. Solo puedo usar mi memoria y conocimiento local.`,source:'kb'};
+  const r=await callAI(curModel.id, q);
+  return{reply:r||'Sin respuesta, intenta de nuevo.',source:'api'};
+}
+
+/* ═══════════════════════════
+   APRENDER DE TODAS LAS IAs
+═══════════════════════════ */
+['learnBtn','learnTopBtn'].forEach(id=>{
+  $(id).addEventListener('click',()=>{
+    const q=inp.value.trim();
+    if(!q){inp.placeholder='✏️ Escribe primero tu pregunta...';inp.focus();setTimeout(()=>inp.placeholder='Escríbele a Maribel...',2500);return;}
+    learnFromAll(q);
+  });
+});
+async function learnFromAll(question){
+  if(isTyping) return;
+  if(!navigator.onLine){toast('Sin conexión. No puedo consultar las IAs.','err');return;}
+  welcome.style.display='none';
+  addMsg('user',question);
+  history.push({role:'user',content:question});
+  inp.value=''; inp.style.height='auto';
+  sendBtn.disabled=true; isTyping=true;
+  lbar.classList.add('show');
+  addMsg('system',`🌐 Consultando ${MODELS.length} IAs en paralelo para ${curUser}...`);
+  let done=0;
+  const tick=i=>{ done++; lpb.style.width=Math.round(done/MODELS.length*100)+'%'; lpct.textContent=Math.round(done/MODELS.length*100)+'%'; lmsg.textContent=`✓ ${MODELS[i]?.label} (${done}/${MODELS.length})`; };
+  const proms=MODELS.map((m,i)=>
+    callAI(m.id, question)
+      .then(r=>{tick(i);return{label:m.label,text:r,ok:true};})
+      .catch(()=>{tick(i);return{label:m.label,text:'',ok:false};})
+  );
+  const results=(await Promise.allSettled(proms)).map(r=>r.status==='fulfilled'?r.value:null).filter(r=>r?.ok&&r.text?.length>8);
+  lbar.classList.remove('show'); lpb.style.width='0%';
+  if(!results.length){
+    addMsg('ai','⚠️ Ninguna IA respondió. Verifica tu conexión.');
+    toast('Sin respuestas','err');
+  } else {
+    for(const r of results){ addMsg('ai',r.text,{tag:'mod',label:r.label}); await new Promise(res=>setTimeout(res,55)); }
+    history.push({role:'assistant',content:results[0].text});
+    const kws=norm(question).split(/\s+/).filter(w=>w.length>3&&!STOPWORDS.includes(w));
+    if(kws.length){
+      memory.push({content:`[${results.length} IAs sobre "${question}"]: ${results[0].text}`,keywords:kws,date:new Date().toISOString(),source:'multi'});
+      saveUserMemory();
+    }
+    saveHist();
+    addMsg('system',`✅ ${results.length}/${MODELS.length} IAs respondieron · Guardado en tu memoria, ${curUser}.`);
+    toast(`${results.length} IAs respondieron · Guardado`,'ok');
+    speakText(results[0].text);
+  }
+  isTyping=false; sendBtn.disabled=false; inp.focus();
+}
+
+/* ═══════════════════════════
+   RENDER MENSAJES
+═══════════════════════════ */
+let tc=0;
+const MFACE=`<svg viewBox="0 0 40 40" width="20" height="20"><ellipse cx="20" cy="23" rx="11" ry="12" fill="#e8966e"/><ellipse cx="20" cy="14" rx="13" ry="13" fill="#3e2010"/><circle cx="16" cy="20" r="2.8" fill="#4e28a0"/><circle cx="24" cy="20" r="2.8" fill="#4e28a0"/><path d="M14,29 Q20,33 26,29" fill="none" stroke="#c24860" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+
+function addMsg(role,content,opts={},persist=true){
+  const row=document.createElement('div'); row.className='mrow '+role;
+  if(role==='system'){
+    const b=document.createElement('div'); b.className='bub sys-b';
+    b.innerHTML=fmt(content); row.appendChild(b);
+    msgs.appendChild(row); msgs.scrollTop=msgs.scrollHeight; return;
+  }
+  const face=document.createElement('div');
+  if(role==='ai'){ face.className='mface'; face.innerHTML=MFACE; }
+  else{ face.className='uface'+(isAdmin?' adm':''); face.textContent=curUser?curUser.substring(0,2).toUpperCase():'TÚ'; }
+  const bub=document.createElement('div');
+  bub.className='bub '+(role==='ai'?'ai-b':'u-b');
+  bub.innerHTML=fmt(content);
+  const meta=document.createElement('div'); meta.className='mmeta';
+  const t=new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'});
+  let tags='';
+  if(opts.tag==='mem') tags='<span class="tag tm">🧠 memoria</span>';
+  else if(opts.label&&role==='ai') tags=`<span class="tag tmod">${opts.label}</span>`;
+  if(opts.isAdm&&role==='user') tags+='<span class="tag tadm">⚙️ admin</span>';
+  meta.innerHTML=t+(tags?' '+tags:'');
+  const wrap=document.createElement('div'); wrap.appendChild(bub); wrap.appendChild(meta);
+  if(role==='user'){row.appendChild(wrap);row.appendChild(face);}
+  else{row.appendChild(face);row.appendChild(wrap);}
+  msgs.appendChild(row); msgs.scrollTop=msgs.scrollHeight;
+  if(persist){msgCount++;updateStats();}
+}
+
+function fmt(t){
+  if(typeof t!=='string') t=String(t);
+  return t
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/```([\s\S]*?)```/g,'<pre style="background:#080a14;border:1px solid #1e2640;border-radius:8px;padding:10px 13px;overflow-x:auto;margin:8px 0;font-size:.79rem;font-family:monospace;line-height:1.5;"><code>$1</code></pre>')
+    .replace(/`([^`]+)`/g,'<code style="background:rgba(184,122,255,.13);padding:1px 6px;border-radius:4px;font-size:.86em;font-family:monospace;">$1</code>')
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g,'<em>$1</em>')
+    .replace(/_(.*?)_/g,'<em>$1</em>')
+    .replace(/\n/g,'<br>');
+}
+
+function showTyping(){
+  const id='ty'+(++tc);
+  const row=document.createElement('div'); row.className='mrow ai'; row.id=id;
+  const face=document.createElement('div'); face.className='mface'; face.innerHTML=MFACE;
+  const bub=document.createElement('div'); bub.className='bub ai-b';
+  bub.innerHTML='<div class="dots"><span></span><span></span><span></span></div>';
+  row.appendChild(face); row.appendChild(bub);
+  msgs.appendChild(row); msgs.scrollTop=msgs.scrollHeight;
+  return id;
+}
+function removeTyping(id){$(id)?.remove();}
+
+/* ═══════════════════════════
+   STATS
+═══════════════════════════ */
+function updateStats(){
+  sMsgs.textContent=msgCount;
+  sMem.textContent=memory.length;
+  sUsers.textContent=Object.keys(allUsers).length;
+  if(isAdmin) renderUserList();
+}
+
+/* ═══════════════════════════
+   ENSEÑAR (manual)
+═══════════════════════════ */
+$('openTeach').addEventListener('click',()=>{ $('teachModal').classList.add('open'); setTimeout(()=>$('teachInp').focus(),80); });
+$('cancelTeach').addEventListener('click',()=>{ $('teachModal').classList.remove('open'); $('teachInp').value=''; });
+$('doTeach').addEventListener('click',()=>{
+  const val=$('teachInp').value.trim(); if(!val) return;
+  const kws=norm(val).split(/\s+/).filter(w=>w.length>3&&!STOPWORDS.includes(w));
+  memory.push({content:val,keywords:kws,date:new Date().toISOString(),source:'manual'});
+  saveUserMemory();
+  $('teachModal').classList.remove('open'); $('teachInp').value='';
+  welcome.style.display='none';
+  addMsg('ai',`✅ ¡Aprendido y guardado en tu perfil, **${curUser}**!\n📝 _"${val.substring(0,80)}${val.length>80?'...':''}"_`,{tag:'mem'});
+  speakText('¡Perfecto! Ya lo guardé en tu memoria.');
+  toast('Recuerdo guardado','ok');
+});
+
+$('clearChatBtn').addEventListener('click',()=>{
+  history=[]; saveHist(); msgCount=0; updateStats();
+  msgs.querySelectorAll('.mrow').forEach(m=>m.remove());
+  welcome.style.display='flex';
+  toast('Nueva conversación','inf',1800);
+});
+
+/* ═══════════════════════════
+   EXPORTAR
+═══════════════════════════ */
+$('exportBtn').addEventListener('click',()=>{
+  if(!history.length){toast('No hay conversación para exportar','wrn');return;}
+  const lines=[];
+  lines.push('╔════════════════════════════════════════════╗');
+  lines.push('║       MARIBEL IA v1.0.0 — Chat Export      ║');
+  lines.push('╠════════════════════════════════════════════╣');
+  lines.push('║  © 2025 Wil Rivera · Todos los derechos   ║');
+  lines.push('╚════════════════════════════════════════════╝');
+  lines.push(`\nUsuario: ${curUser}${isAdmin?' (Administrador)':''}`);
+  lines.push(`Fecha: ${new Date().toLocaleString('es')}`);
+  lines.push(`Mensajes: ${msgCount} · Recuerdos: ${memory.length}`);
+  lines.push('─'.repeat(46));
+  history.forEach(m=>{
+    const who=m.role==='user'?`[${curUser}]`:'[Maribel]';
+    const txt=m.content.replace(/<[^>]*>/g,'').replace(/\*\*/g,'').replace(/\*/g,'').replace(/_/g,'');
+    lines.push(`\n${who}\n${txt}`);
+  });
+  lines.push('\n'+'─'.repeat(46));
+  lines.push('Maribel IA v1.0.0 · © 2025 Wil Rivera');
+  const blob=new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`maribel-${curUser}-${new Date().toISOString().slice(0,10)}.txt`;
+  a.click();
+  toast('Conversación exportada','ok');
+});
+
+/* ═══════════════════════════
+   TEMA
+═══════════════════════════ */
+$('themeBtn').addEventListener('click',()=>{
+  document.body.classList.toggle('light');
+  toast(document.body.classList.contains('light')?'Tema claro':'Tema oscuro','inf',1600);
+});
+
+/* ═══════════════════════════
+   MICRÓFONO
+═══════════════════════════ */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+if(SR){
+  recog=new SR(); recog.lang='es-ES'; recog.interimResults=false;
+  recog.onstart=()=>{
+    micActive=true;
+    micBtn.classList.add('on'); micBtn.textContent='🔴';
+    micTop.classList.add('mic-on'); micTop.innerHTML='<span>🔴</span><span> Escuchando...</span>';
+  };
+  recog.onresult=e=>{
+    inp.value=e.results[0][0].transcript;
+    inp.style.height='auto'; inp.style.height=Math.min(inp.scrollHeight,120)+'px';
+  };
+  recog.onend=()=>{
+    micActive=false;
+    micBtn.classList.remove('on'); micBtn.textContent='🎤';
+    micTop.classList.remove('mic-on'); micTop.innerHTML='<span>🎤</span><span> Voz</span>';
+    if(inp.value.trim()) handleSend();
+  };
+  recog.onerror=()=>{
+    micActive=false;
+    micBtn.classList.remove('on'); micBtn.textContent='🎤';
+    micTop.classList.remove('mic-on'); micTop.innerHTML='<span>🎤</span><span> Voz</span>';
+  };
+}
+function toggleMic(){
+  if(!recog){toast('Tu navegador no soporta voz. Usa Chrome','err');return;}
+  if(micActive) recog.stop(); else{try{recog.start();}catch(e){}}
+}
+micBtn.addEventListener('click',toggleMic);
+micTop.addEventListener('click',toggleMic);
+
+updateStats();
+
+// ── INICIAR APP — cargar nube ──
+initApp();
+</script>
+</body>
+</html>
